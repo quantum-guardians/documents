@@ -1,0 +1,216 @@
+% AQC 논문 한국어 번역본
+% 원문: ../../AQC/main.tex
+\documentclass[twocolumn,a4paper]{article}
+
+\usepackage{../../AQC/nolta2025}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb,bbm,graphicx,subcaption,color,physics,hyperref,algorithm,algorithmic,txfonts}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\inp}[2]{\left\langle {#1} \middle| {#2} \right\rangle}
+\newcommand{\kb}[1]{\ket{{#1}}\!\bra{{#1}}}
+\newcommand{\bbE}{\mathbb{E}} \newcommand{\bbN}{\mathbb{N}} \newcommand{\bbB}{\mathbb{B}}
+\newcommand{\bbS}{\mathbb{S}} \newcommand{\bbR}{\mathbb{R}} \newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbZ}{\mathbb{Z}} \newcommand{\bbH}{\mathbb{H}} \newcommand{\bbQ}{\mathbb{Q}}
+\newcommand{\calX}{\mathcal{X}} \newcommand{\calY}{\mathcal{Y}} \newcommand{\calZ}{\mathcal{Z}}
+\newcommand{\calH}{\mathcal{H}} \newcommand{\calV}{\mathcal{V}} \newcommand{\BSC}{\mathrm{BSC}}
+
+\newtheorem{theorem}{정리}
+\newtheorem{corollary}[theorem]{따름정리}
+\newtheorem{lemma}[theorem]{보조정리}
+\newtheorem{proposition}[theorem]{명제}
+\newtheorem{remark}{비고}
+\newtheorem{example}{예}
+\newtheorem{definition}{정의}
+\newtheorem{conjecture}{추측}
+\newtheorem{postulate}{공준}
+\newtheorem{question}{질문}
+\newtheorem{observation}{관찰}
+
+\begin{document}
+
+\title{군중 압사 사고 예방을 위한 양자 어닐링 기반 보행자 네트워크 방향 최적화: QUBO 정식화 연구}
+\author{이요환${}^\dag$, 정윤성${}^\dag$, 김세엽${}^\dag$, 황원주${}^\ddag$}
+\address{\dag 부산대학교 정보컴퓨터공학부 \\
+\ddag 부산대학교 정보융합공학과 \\
+대한민국 부산광역시 46241 \\
+Email: \email{dev.vackam@gmail.com}, \email{me@yunseong.dev}, \email{ksy1001k96@gmail.com}, \email{wjhwang@pusan.ac.kr}}
+\maketitle
+
+\abstract
+좁은 도시 공간에서 서로 반대 방향으로 이동하는 고밀도 보행 흐름이 합류하면 개인의 이동성과 통제력이 심각하게 상실되어 군중 압사 사고가 발생할 수 있다. 본 연구는 이 문제를 해결하기 위해 양자 어닐링 기반 보행자 네트워크 방향 최적화 프레임워크를 제안한다. 보행자 네트워크는 교차점을 정점으로, 보행 가능한 경로를 간선으로 나타내는 가중 그래프로 모델링한다. 최적화 목적은 경로에 통행 방향을 할당하여 보행 흐름 간 충돌을 줄이고, 이동 효율을 높이며, 국부 혼잡을 완화하는 것이다. 이를 위해 세 가지 상호 보완 전략을 통합한다. 사이클 기반 접근법은 전역 순환과 네트워크 연결성을 보존하고, $n$-홉 기반 접근법은 전체 이동 거리를 줄이며, 흐름 보존 접근법은 각 노드의 유입량과 유출량을 균형 있게 만든다. 최종 최적화 문제는 이차 비제약 이진 최적화(Quadratic Unconstrained Binary Optimization, QUBO) 모델로 정식화하고 D-Wave 양자 어닐링 플랫폼에서 푼다. 실험 결과, 제안 방법은 기존 접근법보다 적은 계산 시간을 요구하면서 혼잡을 줄이고 흐름 안정성을 개선하며 모든 쌍 최단 경로(APSP)의 합을 낮추는 것으로 나타났다.
+\endabstract
+
+\section{서론} \label{sec:intro}
+
+군중 압사 사고는 중대한 공공 안전 문제이며 여러 상황에서 심각한 인명 피해를 일으켰다~\cite{fruin1993causes}. 이러한 사고는 단순히 높은 인구 밀도 때문에 발생하는 것이 아니라 지형적 제약과 병목 같은 환경 조건~\cite{helbing2007dynamics}, 쓰러진 사람에 대한 불충분한 초기 대응~\cite{soomaroo2012disasters} 등 여러 요인의 복잡한 상호작용에서 비롯된다. 2022년 대한민국에서 발생한 군중 사고는 제한된 도시 공간의 극심한 혼잡이 얼마나 빠르게 치명적 상황으로 이어질 수 있는지를 보여 준다~\cite{chang2024crowd}.
+
+이러한 군중 관련 사고를 예방하기 위해 다양한 다면적 해결책이 연구되어 왔다~\cite{Nishinari2024}. 그러나 실제 도시 환경은 매우 광대하고 복잡하며 도로 폐쇄와 병목 같은 예측하지 못한 변수가 동시에 실시간으로 발생한다. 동적으로 변화하는 대규모 환경에서 모든 변수를 고려하고 실시간 최적해를 도출하기 위해 고전 컴퓨팅 자원에만 의존하는 데에는 명확한 한계가 있다.
+
+본 연구는 이러한 문제를 극복하기 위해 대상 지역의 공간적 특성을 그래프로 추상화한다. 양자 어닐링의 기초 프레임워크~\cite{Kadowaki1998}를 바탕으로 군중 제어 최적화 문제를 QUBO 모델로 직접 정식화한다. 이 정식화를 통해 양자 하드웨어를 효과적으로 활용하여 최적 경로를 빠르게 도출하고, 대규모 혼잡 상황에서 군중 밀도를 최소화할 수 있다.
+
+본 연구의 기여는 다음과 같다.
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item[(1)] 복잡한 도시 네트워크와 동적 흐름을 포착하는 그래프로 군중 제어 문제를 모델링한다.
+    \item[(2)] 양자 어닐링으로 대규모 경로 설정 문제를 효율적으로 풀기 위한 새로운 QUBO 정식화를 제안한다.
+    \item[(3)] 고전 알고리즘과의 비교를 통해 실시간 재난 대응에 양자 컴퓨팅을 적용할 수 있음을 보인다.
+\end{itemize}
+
+이후 구성은 다음과 같다. 제~\ref{sec:related}절에서 관련 연구를 검토하고, 제~\ref{sec:method}절에서 제안 방법을 설명한다. 제~\ref{sec:result}절에서 시뮬레이션 결과를 제시하고, 마지막으로 제~\ref{sec:conclusion}절에서 결론을 맺는다.
+
+\section{관련 연구} \label{sec:related}
+
+\subsection{군중 안전과 보행 흐름 제어} \label{subsec:related_crowd}
+
+군중 안전에 관한 선행 연구는 미시적 군중 시뮬레이션, 대피 모델, 흐름 기반 접근법으로 보행자 이동을 분석해 왔다. 이들 연구는 보행자 사이의 밀집 상호작용이 보행 속도를 낮추고 국부 병목을 만들며 불안정한 군중 이동의 위험을 높일 수 있음을 보였다. 교통 및 대피 계획 분야에서는 비상 상황에서 일부 통행 방향을 역전하여 도로 용량 활용도를 높이는 역류(contraflow) 전략도 연구되었다~\cite{kim2008contraflow, aksu2014mathematical}.
+
+그러나 기존 접근법 다수는 보행자 순환 네트워크의 구조 설계보다 운영상 군중 관리나 시뮬레이션 기반 분석에 초점을 둔다. 특히 예방적 인프라 대책으로서 일방통행 보행 경로의 방향을 최적화하는 연구는 상대적으로 부족하다.
+
+\subsection{그래프 기반 네트워크 방향 설정} \label{subsec:related_graph}
+
+무방향 그래프의 간선에 방향을 할당하는 문제는 그래프 이론에서 폭넓게 연구되었다. 고전 연구는 강한 연결성을 유지하면서 무방향 그래프에 방향을 부여할 수 있는 조건을 확립했다~\cite{robbins1939theorem}. 후속 연구에서는 강연결 방향 설정, 네트워크 신뢰성, 교통 네트워크의 최적 방향 할당을 다루었다~\cite{chung1985strongly, roberts1988optimal, roberts1994optimal}.
+
+일방통행 도로 설계 또한 교통 네트워크 최적화 문제로 연구되었다. 기존 접근법은 일반적으로 이동 시간 단축, 교통 용량 개선 또는 도로망 변경 비용 최소화를 목표로 한다~\cite{drezner1997selecting, huang2020bi, huang2020model}. 그러나 간선 수에 따라 가능한 방향 할당 수가 지수적으로 증가하므로 네트워크가 커질수록 계산이 어려워진다. 강한 연결성, 아크 역전, 여러 최적화 목적을 동시에 고려하면 복잡도는 더욱 커진다~\cite{burkard1999minimum, bangjensen2023complexity}.
+
+차량 교통에 주로 초점을 맞춘 선행 연구와 달리 본 연구는 보행자 안전 중심의 네트워크 방향 설정을 다룬다. 제안 정식화는 국부 흐름 균형, 짧은 경로 도달 가능성, 순환 보존을 명시적으로 결합한다.
+
+\subsection{조합 최적화를 위한 양자 어닐링} \label{subsec:related_qa}
+
+양자 어닐링은 Ising 또는 QUBO 형태로 표현할 수 있는 여러 조합 최적화 문제에 적용되어 왔다~\cite{qa_for_optimize}. 대표 응용 분야로 경로 설정, 스케줄링, 그래프 분할, 자원 할당이 있다. QUBO 모델은 이진 결정 변수와 변수 간 쌍별 상호작용을 에너지 함수에 부호화하여 양자 어닐러가 낮은 에너지의 후보 해를 탐색할 수 있게 한다.
+
+현재 양자 어닐링 하드웨어에서 실제로 실행하려면 논리 변수와 그 상호작용을 연결성이 제한된 물리 큐비트에 매핑하는 마이너 임베딩이 필요하다~\cite{minor_embedding_inQA2, minor_embedding_inQA}. 이 과정에서는 하나의 논리 변수가 여러 물리 큐비트로 이루어진 체인을 요구할 수 있어 추가 오버헤드가 발생한다. 따라서 QA 호환 최적화 모델을 설계할 때 임베딩의 실현 가능성과 품질을 고려해야 한다.
+
+이러한 연구를 바탕으로 본 연구는 보행자 네트워크 방향 설정 문제를 QUBO 모델로 정식화하고 D-Wave 양자 어닐링 플랫폼에서 적용 가능성을 평가한다.
+
+\section{시스템 모델과 문제 정식화} \label{sec:model}
+
+가중 무방향 그래프 $G=(V,E,W)$로 표현되는 도시 보행 환경을 고려한다. 여기서 \(V\)는 보행자 교차점, 분기점 또는 의사결정 지점의 집합이고, \(E\)는 이들을 연결하는 보행 가능 구간의 집합이다. 각 무방향 간선 \(\{i,j\}\in E\)는 원래 양방향 이동이 가능한 물리적 보행로를 나타낸다. 집합 \(W=\{w_{ij}\mid \{i,j\}\in E\}\)는 경로 길이, 유효 폭, 보행 용량, 통과 비용 같은 간선 속성을 포함한다. 고밀도 보행 환경에서 좁은 경로의 양방향 이동은 대향 흐름 충돌을 일으키고 보행 효율을 낮추며 국부 혼잡 위험을 높일 수 있다. 따라서 본 연구의 목적은 각 보행 구간에 하나의 보행 방향을 할당하여 기존 양방향 보행자 네트워크를 방향성 일방통행 순환 네트워크로 변환하는 것이다.
+
+각 무방향 간선 \(\{i,j\}\in E\)에 대해 끝점이 \(i<j\)를 만족하도록 임의의 고정 순서를 둔다. 이진 방향 변수는 다음과 같이 정의한다.
+\begin{equation}
+    x_{ij}\in\{0,1\}, \qquad \forall \{i,j\}\in E,\; i<j,
+\end{equation}
+여기서
+\begin{equation}
+x_{ij}=\begin{cases}
+0, & \text{간선 } \{i,j\}\text{의 방향이 }i\rightarrow j\text{인 경우},\\
+1, & \text{간선 } \{i,j\}\text{의 방향이 }j\rightarrow i\text{인 경우}.
+\end{cases}
+\end{equation}
+전체 이진 방향 변수 벡터는 다음과 같다.
+\begin{equation}
+    \mathbf{X}=\{x_{ij}\mid \{i,j\}\in E,\;i<j\}\in\{0,1\}^{|E|}.
+\end{equation}
+벡터 \(\mathbf{X}\)는 방향성 보행자 네트워크 $\vec{G}(\mathbf{X})=(V,\vec{E}(\mathbf{X}))$를 완전히 결정한다. 구체적으로 \(\mathbf{X}\)가 유도하는 방향 간선 집합은
+\begin{equation}
+\begin{aligned}
+\vec{E}(\mathbf{X})={}&\{(i,j)\mid \{i,j\}\in E,\;i<j,\;x_{ij}=0\}\\
+&\cup\{(j,i)\mid \{i,j\}\in E,\;i<j,\;x_{ij}=1\}
+\end{aligned}
+\end{equation}
+이다. 따라서 각 물리적 보행 구간에는 정확히 하나의 방향이 할당된다. 이 구성은 원래 보행자 네트워크의 공간 위상을 보존하면서 개별 보행로의 직접적인 대향 흐름을 제거한다.
+
+각 노드 \(v\in V\)에 대해 원래 무방향 그래프에서 \(v\)와 인접한 노드의 집합을
+\begin{equation}
+    \mathrm{adj}(v)=\{u\in V\mid \{u,v\}\in E\}
+\end{equation}
+로 둔다. 이진 변수 \(x_{ij}\)는 \(i<j\)인 끝점 순서에 대해서만 정의되므로, 방향 그래프 \(\vec{G}(\mathbf{X})\)에서 노드 \(v\)의 진출차수와 진입차수는 \(v\)보다 큰 인덱스와 작은 인덱스의 이웃을 구분해야 한다. 진출차수는
+\begin{equation}
+d_v^{+}(\mathbf{X})=\sum_{\substack{u\in\mathrm{adj}(v)\\v<u}}(1-x_{vu})+\sum_{\substack{u\in\mathrm{adj}(v)\\u<v}}x_{uv},
+\end{equation}
+로 정의한다. 첫 번째 합은 \(v\)에서 더 큰 인덱스의 이웃으로 향하는 간선을, 두 번째 합은 \(v\)에서 더 작은 인덱스의 이웃으로 향하는 간선을 센다. 마찬가지로 진입차수는
+\begin{equation}
+d_v^{-}(\mathbf{X})=\sum_{\substack{u\in\mathrm{adj}(v)\\v<u}}x_{vu}+\sum_{\substack{u\in\mathrm{adj}(v)\\u<v}}(1-x_{uv})
+\end{equation}
+이다. 각 입사 간선에는 정확히 하나의 방향이 할당되므로 모든 노드 \(v\)에 대해 $d_v^{+}(\mathbf{X})+d_v^{-}(\mathbf{X})=|\mathrm{adj}(v)|$가 성립한다.
+
+교차점에서 유입 방향과 유출 방향의 차이가 크면 바람직하지 않은 순환 패턴이 생길 수 있다. 유입 방향은 많고 유출 방향은 적은 노드는 구조적 누적 지점이 될 수 있고, 반대인 노드는 인근 지역에서의 접근성을 떨어뜨릴 수 있다. 국부적으로 균형 잡힌 순환을 유도하기 위해 노드 \(v\)의 방향 불균형을
+\begin{equation}
+    B_v(\mathbf{X})=d_v^{+}(\mathbf{X})-d_v^{-}(\mathbf{X})
+\end{equation}
+로 정의한다. 이를 이진 방향 변수로 직접 나타내면
+\begin{equation}
+B_v(\mathbf{X})=\sum_{\substack{u\in\mathrm{adj}(v)\\v<u}}(1-2x_{vu})+\sum_{\substack{u\in\mathrm{adj}(v)\\u<v}}(2x_{uv}-1)
+\end{equation}
+이다. 국부 흐름 균형 목적함수는
+\begin{equation}
+F_{\mathrm{bal}}(\mathbf{X})=\sum_{v\in V}\left(B_v(\mathbf{X})\right)^2,
+\end{equation}
+또는 동등하게
+\begin{equation}
+F_{\mathrm{bal}}(\mathbf{X})=\sum_{v\in V}\left[\sum_{\substack{u\in\mathrm{adj}(v)\\v<u}}(1-2x_{vu})+\sum_{\substack{u\in\mathrm{adj}(v)\\u<v}}(2x_{uv}-1)\right]^2
+\end{equation}
+로 정식화한다. \(F_{\mathrm{bal}}(\mathbf{X})\)를 최소화하면 각 노드의 보행자 유입 방향 수와 유출 방향 수가 비슷해진다. 특히 차수가 홀수인 노드에서는 정확한 균형이 항상 가능하지 않지만, 제곱 페널티는 심하게 불균형한 국부 방향 패턴을 체계적으로 억제한다.
+
+방향성 보행자 네트워크는 국부 균형뿐 아니라 도시 공간의 서로 다른 부분 사이에서 효율적인 이동도 지원해야 한다. \(D_{st}(\mathbf{X})\)를 \(\vec{G}(\mathbf{X})\)에서 간선 가중치 \(w_{ij}\)에 따라 계산한 출발 노드 \(s\)부터 도착 노드 \(t\)까지의 최단 방향 경로 거리라고 하자. \(s\)에서 \(t\)로 가는 방향 경로가 없으면 $D_{st}(\mathbf{X})=\infty$로 둔다. 모든 쌍 최단 경로 비용의 합은
+\begin{equation}
+F_{\mathrm{dist}}(\mathbf{X})=\sum_{\substack{s,t\in V\\s\neq t}}D_{st}(\mathbf{X})
+\end{equation}
+로 정의한다. \(F_{\mathrm{dist}}(\mathbf{X})\)가 작을수록 보행자는 노드 쌍 사이를 더 낮은 총 방향성 통과 비용으로 이동할 수 있다. 이 목적함수는 전역 이동 효율을 나타내지만 방향 그래프가 네트워크 수준의 도달 가능성을 보존할 때만 의미가 있다. 따라서 결과 방향 그래프가 다음과 같이 강하게 연결될 것을 요구한다.
+\begin{equation}
+\forall s,t\in V,\;s\neq t,\qquad \exists\text{ \(\vec{G}(\mathbf{X})\)에서 \(s\)부터 \(t\)까지의 방향 경로}.
+\end{equation}
+
+강연결 방향 설정의 가능 집합은
+\begin{equation}
+\mathcal{X}_{\mathrm{sc}}=\left\{\mathbf{X}\in\{0,1\}^{|E|}\;\middle|\;\vec{G}(\mathbf{X})\text{가 강하게 연결됨}\right\}
+\end{equation}
+으로 정의한다. 이 조건은 일부 영역을 고립시키거나 도달할 수 없는 목적지를 만드는 방향 할당을 막는다. 또한 개별 경로에서 양방향 이동을 제거하더라도 네트워크 전체의 접근성을 유지해야 한다는 일방통행 보행 순환 시스템의 기본 구조 요건을 반영한다.
+
+최단 경로 거리는 전체 그래프의 전역 방향 패턴에 의존하므로 \(F_{\mathrm{dist}}(\mathbf{X})\)를 직접 최적화하기는 계산상 어려울 수 있다. 따라서 짧은 방향 경로 형성을 유도하는 국부 도달 가능성 대리 목적함수를 도입할 수 있다. 추가 결정 변수 없이 이를 표현하기 위해 인접한 노드의 순서쌍 \((a,b)\)에 대한 방향 일치 함수를 먼저 정의한다.
+\begin{equation}
+\rho_{ab}(\mathbf{X})=\begin{cases}
+1-x_{ab}, & a<b\text{이고 }\{a,b\}\in E\text{인 경우},\\
+x_{ba}, & b<a\text{이고 }\{a,b\}\in E\text{인 경우}.
+\end{cases}
+\end{equation}
+함수 \(\rho_{ab}(\mathbf{X})\)는 추가 결정 변수가 아니라 \(\mathbf{X}\)의 대응 이진 변수로 완전히 결정되는 간결한 표현이다. \(\vec{G}(\mathbf{X})\)에 방향 간선 \(a\rightarrow b\)가 있으면 1, 없으면 0이다.
+
+\(\rho_{ab}(\mathbf{X})\)를 사용하면 가능한 방향성 2-홉 경로의 수는
+\begin{equation}
+P_2(\mathbf{X})=\sum_{i\in V}\sum_{k\in\mathrm{adj}(i)}\sum_{\substack{j\in\mathrm{adj}(k)\\j\neq i}}\rho_{ik}(\mathbf{X})\rho_{kj}(\mathbf{X})
+\end{equation}
+로 나타낼 수 있다. 마찬가지로 가능한 방향성 3-홉 경로의 수는
+\begin{equation}
+P_3(\mathbf{X})=\sum_{i\in V}\sum_{j\in\mathrm{adj}(i)}\sum_{\substack{k\in\mathrm{adj}(j)\\k\neq i}}\sum_{\substack{\ell\in\mathrm{adj}(k)\\\ell\neq j,\;\ell\neq i}}\rho_{ij}(\mathbf{X})\rho_{jk}(\mathbf{X})\rho_{k\ell}(\mathbf{X})
+\end{equation}
+이다. 이 값들은 방향 설정이 단거리 및 중거리의 방향성 도달 가능성을 얼마나 지원하는지 측정한다. 짧은 방향 경로를 최대화하면 국부적으로 접근 가능한 순환 구조를 촉진하며 불필요한 우회를 줄이는 구조적 대리 지표가 될 수 있다. 이에 따라 짧은 경로 도달 가능성 목적함수를
+\begin{equation}
+F_{\mathrm{hop}}(\mathbf{X})=-\lambda_2P_2(\mathbf{X})-\lambda_3P_3(\mathbf{X})
+\end{equation}
+로 정의한다. 여기서 \(\lambda_2\geq0\)과 \(\lambda_3\geq0\)은 2-홉 및 3-홉 도달 가능성의 상대적 중요도를 조절한다. \(F_{\mathrm{hop}}(\mathbf{X})\)의 최소화는 가능한 짧은 방향 경로 수의 최대화와 같다.
+
+보행자 네트워크 방향 설정 문제는 이진 제약 최적화 문제로 정식화한다. 유일한 결정 변수는 이진 방향 벡터 \(\mathbf{X}\)이다. 정확한 거리 기반 목적함수를 사용하면 문제는
+\begin{equation}
+\begin{aligned}
+\min_{\mathbf{X}\in\{0,1\}^{|E|}}\quad&\alpha F_{\mathrm{bal}}(\mathbf{X})+\beta F_{\mathrm{dist}}(\mathbf{X})\\
+\mathrm{s.t.}\quad&\mathbf{X}\in\mathcal{X}_{\mathrm{sc}}
+\end{aligned}
+\end{equation}
+로 쓸 수 있다. 여기서 \(\alpha\geq0\)과 \(\beta\geq0\)은 국부 균형과 전역 이동 효율의 상대적 중요도를 조절하는 가중 계수다.
+
+\section{제안 방법} \label{sec:method}
+\begin{itemize}
+    \item \textbf{프레임워크 개요} --- 파이프라인 다이어그램: 무방향 $G$ $\rightarrow$ 세 전략 모듈 $\rightarrow$ 결합 QUBO $\rightarrow$ D-Wave $\rightarrow$ 방향 그래프 $\vec{G}(\mathbf{X}^{*})$.
+    \item \textbf{사이클 기반 전략} --- 강한 연결성의 대리 조건인 짧은 사이클 보존과 $F_{\mathrm{cyc}}(\mathbf{X})$의 정의.
+    \item \textbf{$n$-홉 도달 가능성 전략} --- $F_{\mathrm{hop}}(\mathbf{X})=-\lambda_2P_2-\lambda_3P_3$를 재사용하고 APSP의 계산 가능한 대리 목적함수로 정당화.
+    \item \textbf{흐름 보존 전략} --- $F_{\mathrm{bal}}(\mathbf{X})$를 재사용하고 본래의 이차 형식을 강조.
+    \item \textbf{결합 QUBO} --- $H(\mathbf{X})=\alpha F_{\mathrm{bal}}+\beta F_{\mathrm{hop}}+\gamma F_{\mathrm{cyc}}$; 삼차·사차 항의 차수 축소; 페널티 가중치 선택.
+    \item \textbf{D-Wave에서의 풀이} --- 마이너 임베딩, 체인 강도, 읽기 횟수, 후처리.
+    \item \textbf{알고리즘 요약} --- 전체 파이프라인의 의사코드.
+\end{itemize}
+
+\section{시뮬레이션 결과} \label{sec:result}
+얻은 결과를 모두 제시하고 여기에서 고전 알고리즘과 비교한다.
+
+\section{결론} \label{sec:conclusion}
+
+\bibliographystyle{plain}
+\bibliography{../../AQC/Fig_MaiDinhCong/ref}
+
+\end{document}
