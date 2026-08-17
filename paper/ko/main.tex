@@ -116,7 +116,7 @@ Email: \email{dev.vackam@gmail.com}, \email{me@yunseong.dev}, \email{ksy1001k96@
 F_{\mathrm{dist}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{\substack{s,t\in V\\s\neq t}}\frac{D_{st}(\mathbf{X})}{\bar{D}_{st}}
 \label{eq:stretch}
 \end{equation}
-로 정의한다. 항상 \(D_{st}\geq\bar{D}_{st}\)이므로 \(F_{\mathrm{dist}}(\mathbf{X})\geq1\)이고, 값이 1에 가까울수록 방향화가 원래의 보행 거리를 잘 보존한다. 이 지표는 그래프 크기와 가중치 스케일에 불변이므로 서로 다른 규모의 네트워크를 비교할 수 있다. 다만 제~\ref{sec:result}절의 실험은 정규화하지 않은 평균 유향 거리 \(D_{\mathrm{avg}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{s\neq t}D_{st}(\mathbf{X})\)를 기록하였으므로 크기 간 비교에는 쓸 수 없다.
+로 정의한다. 항상 \(D_{st}\geq\bar{D}_{st}\)이므로 \(F_{\mathrm{dist}}(\mathbf{X})\geq1\)이고, 값이 1에 가까울수록 방향화가 원래의 보행 거리를 잘 보존한다. 이 지표는 그래프 크기와 가중치 스케일에 불변이므로 서로 다른 규모의 네트워크를 비교할 수 있다. 다만 제~\ref{sec:result}절의 실험은 정규화하지 않은 평균 유향 거리 \(D_{\mathrm{avg}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{s\neq t}D_{st}(\mathbf{X})\)를 기록하였으므로 크기 간 비교에는 쓸 수 없다. 크기 간 비교는 제~\ref{sec:result}절에서 무방향 기준 거리로 나눈 근사값으로 대신한다(그림~\ref{fig:stretch}).
 
 식~\eqref{eq:stretch}가 의미를 가지려면 \(\vec{G}(\mathbf{X})\)가 강연결이어야 한다. \(\vec{G}(\mathbf{X})\)가 강연결이 되는 \(\mathbf{X}\) 전체의 집합을 \(\mathcal{X}_{\mathrm{sc}}\)로 둔다.
 
@@ -253,6 +253,17 @@ F_{\mathrm{hop}}(\mathbf{X})=-\lambda_2P_2(\mathbf{X})-\lambda_3P_3(\mathbf{X})
 \includegraphics[width=\linewidth]{fig/apsp_reduction.png}
 \caption{방향화 후 평균 유향 최단 경로 거리 \(D_{\mathrm{avg}}\)(낮을수록 좋음, 세 인스턴스 평균, 단 제안 방법의 \(|V|=200\)은 두 인스턴스). SA는 Raw SA, Ours는 제안 방법이다. Raw SA는 \(|V|\geq400\)에서 강연결 배향을 얻지 못해 표시하지 않았다.}
 \label{fig:apsp}
+\end{figure}
+
+\(D_{\mathrm{avg}}\)는 순서쌍 수로만 나눈 값이므로 그래프가 커지면 함께 커진다. 크기 간 비교를 위해 그림~\ref{fig:stretch}는 같은 결과를 방향화 이전 거리에 대한 늘어남 비율로 다시 보인다. 무방향 평균 거리 \(\bar{D}_{\mathrm{avg}}\)는 각 인스턴스를 동일한 씨앗으로 재생성해 구하였으며 \(|V|=100,200,300,400,500\)에서 각각 4.271, 5.671, 6.633, 7.643, 8.097이다. 제안 방법의 비율은 1.28, 1.27, 1.26, 1.25, 1.27로 크기와 무관하게 일정하고, ILS는 1.17--1.19, Robbins는 3.56에서 8.13까지 커진다. 즉 그림~\ref{fig:apsp}에서 크기에 따라 나빠지는 것처럼 보이는 부분은 배향 품질의 저하가 아니라 그래프가 커진 효과이며, 제안 방법과 ILS의 차이는 크기가 늘어도 벌어지지 않는다.
+
+다만 그림~\ref{fig:stretch}의 값은 식~\eqref{eq:stretch}의 \(F_{\mathrm{dist}}\)가 아니라 평균의 비율 \(D_{\mathrm{avg}}/\bar{D}_{\mathrm{avg}}\)이다. \(F_{\mathrm{dist}}\)는 쌍별 비율의 평균이므로 각 방법이 실제로 만든 배향이 있어야 계산되는데, 이번 실험 기록에는 배향이 남아 있지 않아 사후에 복원할 수 없었다. 두 값은 일치하지 않는다. Robbins 방식으로 배향한 같은 인스턴스에서 둘을 직접 비교하면 평균의 비율이 \(F_{\mathrm{dist}}\)보다 4--10\% 낮다. 무방향 거리가 짧은 쌍일수록 늘어남이 크고 평균의 비율은 이 쌍들을 덜 반영하기 때문이다. 따라서 그림~\ref{fig:stretch}의 값은 \(F_{\mathrm{dist}}\)의 하한으로 읽어야 한다.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig/apsp_stretch.png}
+\caption{방향화로 인한 거리 늘어남 비율 \(D_{\mathrm{avg}}/\bar{D}_{\mathrm{avg}}\)(낮을수록 좋음, 1이면 방향화가 원래 거리를 그대로 보존). 그림~\ref{fig:apsp}와 같은 실험을 무방향 기준 거리로 나눈 것으로, 크기가 다른 네트워크를 같은 축에서 비교할 수 있다. 식~\eqref{eq:stretch}의 \(F_{\mathrm{dist}}\)는 쌍별 비율의 평균이므로 이 값과 다르며, 이 값이 4--10\% 낮게 나온다.}
+\label{fig:stretch}
 \end{figure}
 
 \subsection{실행 시간}
