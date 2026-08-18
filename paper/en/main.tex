@@ -123,7 +123,7 @@ How much orientation inflates distances is a long-standing question in graph the
 F_{\mathrm{dist}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{\substack{s,t\in V\\s\neq t}}\frac{D_{st}(\mathbf{X})}{\bar{D}_{st}}
 \label{eq:stretch}
 \end{equation}
-Since \(D_{st}\geq\bar{D}_{st}\) always holds, we have \(F_{\mathrm{dist}}(\mathbf{X})\geq1\), and values closer to one indicate that the orientation preserves the original walking distances more faithfully. This metric is invariant to graph size and weight scale, so networks of different sizes can be compared. The experiments in Section~\ref{sec:result}, however, recorded the unnormalized mean directed distance \(D_{\mathrm{avg}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{s\neq t}D_{st}(\mathbf{X})\), which therefore cannot be used for cross-size comparison.
+Since \(D_{st}\geq\bar{D}_{st}\) always holds, we have \(F_{\mathrm{dist}}(\mathbf{X})\geq1\), and values closer to one indicate that the orientation preserves the original walking distances more faithfully. This metric is invariant to graph size and weight scale, so networks of different sizes can be compared. The experiments in Section~\ref{sec:result}, however, recorded the unnormalized mean directed distance \(D_{\mathrm{avg}}(\mathbf{X})=\frac{1}{|V|(|V|-1)}\sum_{s\neq t}D_{st}(\mathbf{X})\), which therefore cannot be used for cross-size comparison. Cross-size comparison is instead carried out in Section~\ref{sec:result} with an approximation obtained by dividing by the undirected reference distance (Figure~\ref{fig:stretch}).
 
 For \eqref{eq:stretch} to be meaningful, \(\vec{G}(\mathbf{X})\) must be strongly connected. We denote by \(\mathcal{X}_{\mathrm{sc}}\) the set of all \(\mathbf{X}\) for which \(\vec{G}(\mathbf{X})\) is strongly connected.
 
@@ -259,6 +259,17 @@ Figure~\ref{fig:apsp} reports \(D_{\mathrm{avg}}\) by method. Strongly connected
 \includegraphics[width=\linewidth]{../ko/fig/apsp_reduction.png}
 \caption{Mean directed shortest-path distance \(D_{\mathrm{avg}}\) after orientation (lower is better; averaged over three instances, except \(|V|=200\) for the proposed method, which averages two). SA denotes Raw SA and Ours denotes the proposed method. Raw SA is omitted for \(|V|\geq400\), where it obtains no strongly connected orientation.}
 \label{fig:apsp}
+\end{figure}
+
+Because \(D_{\mathrm{avg}}\) is normalized only by the number of ordered pairs, it grows with the graph. To enable cross-size comparison, Figure~\ref{fig:stretch} replots the same results as the ratio by which orientation stretches the pre-orientation distances. The undirected mean distance \(\bar{D}_{\mathrm{avg}}\) was obtained by regenerating each instance from the same seed, and equals 4.271, 5.671, 6.633, 7.643 and 8.097 at \(|V|=100,200,300,400,500\). The ratio of the proposed method is 1.28, 1.27, 1.26, 1.25 and 1.27, that is, flat in the graph size; ILS stays within 1.17--1.19, whereas Robbins grows from 3.56 to 8.13. The apparent degradation with size in Figure~\ref{fig:apsp} is therefore an effect of the graph growing rather than of the orientation quality deteriorating, and the gap between the proposed method and ILS does not widen with size.
+
+The values in Figure~\ref{fig:stretch} are, however, the ratio of the means \(D_{\mathrm{avg}}/\bar{D}_{\mathrm{avg}}\) and not the \(F_{\mathrm{dist}}\) of \eqref{eq:stretch}. Since \(F_{\mathrm{dist}}\) is the mean of the per-pair ratios, computing it requires the orientation each method actually produced, and those orientations were not retained in the experimental records, so they could not be recovered after the fact. The two quantities do not coincide: comparing them directly on the same instances under a Robbins-style orientation, the ratio of the means falls 4--10\% below \(F_{\mathrm{dist}}\), because pairs at short undirected distance are stretched the most and the ratio of the means underweights them. The values in Figure~\ref{fig:stretch} should accordingly be read as a lower bound on \(F_{\mathrm{dist}}\).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{../ko/fig/apsp_stretch.png}
+\caption{Distance stretch induced by orientation, \(D_{\mathrm{avg}}/\bar{D}_{\mathrm{avg}}\) (lower is better; a value of one means the orientation preserves the original distances exactly). The experiment of Figure~\ref{fig:apsp} is divided by the undirected reference distance, which puts networks of different sizes on a common axis. The \(F_{\mathrm{dist}}\) of \eqref{eq:stretch} is the mean of the per-pair ratios and therefore differs from this quantity, which falls 4--10\% below it.}
+\label{fig:stretch}
 \end{figure}
 
 \subsection{Runtime}
