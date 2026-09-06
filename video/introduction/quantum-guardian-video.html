@@ -496,20 +496,20 @@ const cues=[
 ];
 // Baseline definitions follow paper/ko/main.tex (experimental setup).
 const baselines=[
- {name:'SA',english:'Simulated Annealing',detail:'가끔 나쁜 변화도 허용하며 더 좋은 방향을 탐색',line:'SA는 가끔 나빠지는 변화도 허용하면서 더 좋은 방향 조합을 찾습니다.'},
- {name:'ILS',english:'Iterated Local Search',detail:'개선하다 막히면 방향을 흔들고 다시 탐색',line:'ILS는 방향을 개선하다 막히면 조합을 흔들고 다시 탐색합니다.'},
- {name:'Robbin',english:'Robbins 방식',detail:'모든 정점 사이를 오갈 수 있도록 방향을 구성',line:'Robbin은 이동거리 최소화보다, 모든 정점 사이를 오갈 수 있게 방향을 정하는 방법입니다.'}
+ {name:'SA',english:'Simulated Annealing',detail:'가끔 나쁜 변화도 허용하며 더 좋은 방향을 탐색'},
+ {name:'ILS',english:'Iterated Local Search',detail:'개선하다 막히면 방향을 흔들고 다시 탐색'},
+ {name:'Robbin',english:'Robbins 방식',detail:'모든 정점 사이를 오갈 수 있도록 방향을 구성'}
 ];
 function baselineScene(){return frame('비교한 세 가지 방법','모두 고전 컴퓨터에서 실행하는 방법',`<div class="baselineBody">${baselines.map(item=>`<div class="baselineRow"><div><b>${item.name}</b><small>${item.english}</small></div><p>${item.detail}</p></div>`).join('')}</div><style>#qg3 .baselineBody{position:absolute;left:8%;right:8%;top:34%;bottom:9%;display:grid;grid-template-rows:repeat(3,1fr);gap:14px}#qg3 .baselineRow{display:grid;grid-template-columns:30% 1fr;align-items:center;gap:20px;border-top:1px solid var(--rule)}#qg3 .baselineRow b{color:var(--accent);font-size:clamp(18px,2.5vw,32px)}#qg3 .baselineRow small{display:block;color:var(--quiet);font-size:clamp(9px,1.1vw,14px);margin-top:4px}#qg3 .baselineRow p{margin:0;font-size:clamp(13px,1.9vw,24px);word-break:keep-all;line-height:1.4}@media(max-width:600px){#qg3 .baselineBody{gap:8px}#qg3 .baselineRow{gap:12px}}</style>`,'')}
 for(const scene of scenes)scene.o=scene.a;
-const baselineIntro='결과를 보기 전에, 어떤 방법들과 비교했는지 알려드리겠습니다. 세 가지 모두 고전 컴퓨터에서 실행하는 방법입니다.';
-const insertionTime=264,baselineDuration=8,addedDuration=(baselines.length+1)*baselineDuration;
+const baselineLine='결과는 화면에 보이는 세 가지 기존 방법, SA, ILS, Robbin과 비교했습니다.';
+const insertionTime=264,baselineDuration=8,addedDuration=baselineDuration;
 const sceneInsertion=scenes.findIndex(scene=>scene.a===insertionTime);
 for(const scene of scenes){if(scene.a>=insertionTime){scene.a+=addedDuration;scene.b+=addedDuration}}
 scenes.splice(sceneInsertion,0,{a:insertionTime,b:insertionTime+addedDuration,o:insertionTime,f:baselineScene});
 const cueInsertion=cues.findIndex(cue=>cue[0]===insertionTime);
 for(const cue of cues){if(cue[0]>=insertionTime){cue[0]+=addedDuration;cue[1]+=addedDuration}}
-cues.splice(cueInsertion,0,...[baselineIntro,...baselines.map(item=>item.line)].map((line,i)=>[insertionTime+i*baselineDuration,insertionTime+(i+1)*baselineDuration,line]));
+cues.splice(cueInsertion,0,[insertionTime,insertionTime+baselineDuration,baselineLine]);
 // Signpost lines that announce the next topic. `at` is a time on the timeline
 // above. kind 'end' keeps the line in the scene ending at `at`; kind 'start'
 // puts it in the scene starting there. An entry without text stretches the cue
@@ -535,7 +535,7 @@ for(const item of insertions){
 // timeline as written in `scenes`, so a span is moved past the edits above
 // before it is cut; later spans go first so earlier ones stay valid. Cues
 // inside a span go away; a scene left with no length is dropped.
-const removals=[[304,318],[292,304],[90,120],[27,35],[11,15]];
+const removals=[[304,318],[292,304],[264,271],[90,120],[27,35],[11,15]];
 // A span end that meets an insertion point stays before the inserted line.
 const moved=(x,end)=>x+edits.filter(edit=>end?edit.at<x:edit.at<=x).reduce((sum,edit)=>sum+edit.dur,0);
 for(const [from,to] of removals.map(([from,to])=>[moved(from,false),moved(to,true)]).sort((p,q)=>q[0]-p[0])){
