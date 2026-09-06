@@ -62,6 +62,7 @@ body.exporting .stage iframe{display:block;width:1280px;height:883px}
   </div>
   <ol id="list"></ol>
   <div class="export">
+   <button id="trimStored">예전 녹음본 앞뒤 다듬기</button>
    <button id="exportFixed">시간표 위치에 합친 wav</button>
    <button id="exportPushed">겹치지 않게 밀어서 합친 wav</button>
    <button id="exportClips">대사별 파일 전부</button>
@@ -128,9 +129,9 @@ async function toggleRecording(){
  chunks=[];recorder=new MediaRecorder(stream,{mimeType:MIME});
  recorder.ondataavailable=event=>chunks.push(event.data);
  recorder.onstop=async()=>{
-  const blob=new Blob(chunks,{type:MIME});
-  const decoded=await audioContext.decodeAudioData(await blob.arrayBuffer());
-  const clip={id:index,text:cues[index][2],blob,seconds:decoded.duration,savedAt:Date.now()};
+  const raw=new Blob(chunks,{type:MIME});
+  const trimmed=trimBuffer(await audioContext.decodeAudioData(await raw.arrayBuffer()));
+  const clip={id:index,text:cues[index][2],blob:wavBlob(trimmed),seconds:trimmed.duration,trimmed:true,savedAt:Date.now()};
   await saveClip(clip);clips.set(index,clip);
   recording=false;recButton.classList.remove('on');recButton.textContent='● 녹음';
   select(index);
@@ -226,6 +227,31 @@ async function exportVideo(mode){
  $('exportNote').textContent='webm 을 내려받았습니다. mp4 로 바꾸는 ffmpeg 명령은 README 를 보세요.';
 }
 function finishExport(){document.body.classList.remove('exporting');qg.setExporting(false);$('exportOverlay').hidden=true;qg.goCue(index)}
+// Recordings start and end with the key or mouse click that toggled them, so
+// drop 0.3 s at both ends, then also drop leading and trailing silence, keeping
+// 0.15 s of room tone, and fade 10 ms at the cuts.
+function trimBuffer(buffer){
+ const rate=buffer.sampleRate,data=buffer.getChannelData(0),edge=Math.round(0.3*rate),window=Math.round(0.01*rate),pad=Math.round(0.15*rate);
+ let start=edge,end=data.length-edge;if(end-start<rate*0.2){start=0;end=data.length}
+ const loud=at=>{let sum=0;for(let i=at;i<Math.min(at+window,data.length);i++)sum+=data[i]*data[i];return Math.sqrt(sum/window)>0.01};
+ let s=start;while(s+window<end&&!loud(s))s+=window;
+ let e=end;while(e-window>s&&!loud(e-window))e-=window;
+ s=Math.max(start,s-pad);e=Math.min(end,e+pad);if(e-s<rate*0.2){s=start;e=end}
+ const out=new AudioBuffer({length:e-s,sampleRate:rate,numberOfChannels:1}),o=out.getChannelData(0);o.set(data.subarray(s,e));
+ const fade=Math.min(Math.round(0.01*rate),o.length>>1);for(let i=0;i<fade;i++){o[i]*=i/fade;o[o.length-1-i]*=i/fade}
+ return out;
+}
+async function trimStored(){
+ let count=0;
+ for(const [i,clip] of clips){
+  if(clip.trimmed)continue;
+  const trimmed=trimBuffer(await audioContext.decodeAudioData(await clip.blob.arrayBuffer()));
+  const next={...clip,blob:wavBlob(trimmed),seconds:trimmed.duration,trimmed:true};
+  await saveClip(next);clips.set(i,next);count+=1;
+ }
+ $('exportNote').textContent=count?`${count}개 녹음본의 앞뒤를 다듬었습니다.`:'다듬을 녹음본이 없습니다. 새 녹음은 저장할 때 자동으로 다듬습니다.';
+ select(index);
+}
 function wavBlob(buffer){
  const data=buffer.getChannelData(0),out=new DataView(new ArrayBuffer(44+data.length*2));
  const text=(offset,s)=>[...s].forEach((c,i)=>out.setUint8(offset+i,c.charCodeAt(0)));
@@ -237,7 +263,8 @@ function download(blob,name){const a=document.createElement('a');a.href=URL.crea
 $('exportFixed').onclick=()=>render('fixed');
 $('exportPushed').onclick=()=>render('pushed');
 $('exportVideoFollow').onclick=()=>exportVideo('follow');$('exportVideoFixed').onclick=()=>exportVideo('fixed');
-$('exportClips').onclick=()=>{for(const [i,clip] of [...clips].sort((a,b)=>a[0]-b[0]))download(clip.blob,`cue-${String(i+1).padStart(2,'0')}.webm`);$('exportNote').textContent=`${clips.size}개 파일을 내려받았습니다. 브라우저가 여러 파일 내려받기를 물으면 허용하세요.`};
+$('trimStored').onclick=trimStored;
+$('exportClips').onclick=()=>{for(const [i,clip] of [...clips].sort((a,b)=>a[0]-b[0]))download(clip.blob,`cue-${String(i+1).padStart(2,'0')}.${clip.blob.type==='audio/wav'?'wav':'webm'}`);$('exportNote').textContent=`${clips.size}개 파일을 내려받았습니다. 브라우저가 여러 파일 내려받기를 물으면 허용하세요.`};
 })();
 </script>
 </body>
