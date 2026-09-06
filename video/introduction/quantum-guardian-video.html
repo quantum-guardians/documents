@@ -191,7 +191,7 @@ function resultPlot(kind){
 }
 function resultsConclusion(){return frame('결과를 정리하면','500개 정점 실험 · 경로 품질 기준','<div class="prepWhy" style="position:absolute;left:20%;right:20%;top:36%;display:grid;grid-template-columns:1fr;gap:24px;font-size:clamp(13px,1.8vw,23px);line-height:1.6;text-align:center"><div><strong>APSP는 ILS 대비 7.7% 높음</strong><p>Robbin 대비로는 84.4% 낮음</p><b>문제를 나누어 풀면서도 경로 품질 유지</b></div></div>','')}
 
-function nhopScatter(){return frame('n-hop 이웃 수와 APSP 총합','정점 50개 · Delaunay 간선 137개 · 방향 조합 500개 측정','<div class="scatterBox"><img src="./apsp_nhop_v50_delaunay.png" alt="APSP 총합과 2-hop·3-hop·4-hop 이웃 수의 산점도 3개"></div><div class="scatterNote">가로축 APSP 총합 · 세로축 n-hop 이웃 수 · 2-hop, 3-hop, 4-hop 세 경우 모두 오른쪽 아래로 기울어져 있다</div><style>#qg3 .scatterBox{position:absolute;left:5%;right:5%;top:31%;bottom:15%;display:grid;place-items:center;background:#fff;border:1px solid var(--rule);padding:1%}#qg3 .scatterBox img{max-width:100%;max-height:100%;display:block}#qg3 .scatterNote{position:absolute;left:7%;right:7%;bottom:4%;text-align:center;font-size:clamp(10px,1.3vw,17px);color:var(--quiet);word-break:keep-all}@media(max-width:600px){#qg3 .scatterBox{left:3%;right:3%;top:30%;bottom:17%}}</style>','')}
+function nhopScatter(){return frame('n차 이웃의 수와 APSP 총합','정점 50개 · Delaunay 간선 137개 · 방향 조합 500개 측정','<div class="scatterBox"><img src="./apsp_nhop_v50_delaunay.png" alt="APSP 총합과 2차·3차·4차 이웃의 수의 산점도 3개"></div><div class="scatterNote">가로축 APSP 총합 · 세로축 n차 이웃의 수 · 2차, 3차, 4차 세 경우 모두 오른쪽 아래로 기울어져 있다</div><style>#qg3 .scatterBox{position:absolute;left:5%;right:5%;top:31%;bottom:15%;display:grid;place-items:center;background:#fff;border:1px solid var(--rule);padding:1%}#qg3 .scatterBox img{max-width:100%;max-height:100%;display:block}#qg3 .scatterNote{position:absolute;left:7%;right:7%;bottom:4%;text-align:center;font-size:clamp(10px,1.3vw,17px);color:var(--quiet);word-break:keep-all}@media(max-width:600px){#qg3 .scatterBox{left:3%;right:3%;top:30%;bottom:17%}}</style>','')}
 
 const scenes=[
 {a:0,b:15,f:()=>frame('양자 어닐링 기반<br>보행 네트워크 방향 최적화','Quantum Guardian 팀 · 다중 밀집 사고 예방을 위한 연구',graph(7,10,true),'프로젝트 소개')},
@@ -206,8 +206,8 @@ const scenes=[
 {a:150,b:166,f:()=>frame('양자 어닐링 · QA','상태 준비 → 문제 반영 → 낮은 에너지의 결과',qaFlow(),'양자의 물리적 성질을 이용해 낮은 에너지의 해를 찾고 측정한다.')},
 {a:166,b:180,f:()=>frame('에너지 지형과 터널링','낮은 골짜기는 더 낮은 목적함수 값 · 개념도',energyScene(),'')},
 {a:180,b:192,f:()=>frame('QUBO란?','목적함수를 이진 변수의 1차·2차 항으로 표현하는 형식',`<div class="formula"><div class="term">xᵢ</div><div class="arrow">+</div><div class="term">xᵢxⱼ</div><div class="arrow">→</div><div class="term">min E<sub>QUBO</sub>(x)</div></div>`,'QUBO는 APSP 그 자체가 아니라, 양자 어닐링이 계산할 수 있도록 바꾼 목적함수의 표현 형식입니다.')},
-{a:192,b:205,f:()=>frame('APSP를 n-hop으로 바꾸기','QUBO가 다룰 수 있는 근사 목적',`<div class="equations" style="grid-template-columns:1fr"><div class="eqMain">APSP(X) <span class="arrow">→</span> E<sub>n-hop</sub>(X)</div><div class="eqParts" style="grid-template-columns:1fr"><div class="eqPart"><strong>QUBO용 n-hop 목적</strong><br>min E<sub>n-hop</sub>(X) = −λ₂P₂(X) − λ₃P₃(X)<small>P₂, P₃: 2-hop·3-hop 도달 항<br>λ₂, λ₃: 각 항의 가중치</small></div></div></div>`,'APSP 총합을 그대로 넣기 어려워, QUBO가 다룰 수 있는 n-hop 목적 함수로 바꾸었습니다.')},
-{a:205,b:211,f:()=>frame('n-hop과 APSP','실험에서 관찰한 관계',`<div class="result"><div class="relation"><div>n-hop 이웃 수<small>짧게 도달 가능한 정점</small></div><div class="down">↑<br>↓</div><div>APSP 총합<small>모든 정점 쌍의 최단거리 합</small></div></div></div>`,'n-hop 도달 가능성이 커질수록 APSP 총합이 감소하는 경향을 확인했다.')},
+{a:192,b:205,f:()=>frame('APSP를 n차 이웃의 수로 바꾸기','QUBO가 다룰 수 있는 근사 목적',`<div class="equations" style="grid-template-columns:1fr"><div class="eqMain">APSP(X) <span class="arrow">→</span> E<sub>n차 이웃</sub>(X)</div><div class="eqParts" style="grid-template-columns:1fr"><div class="eqPart"><strong>QUBO용 n차 이웃 목적</strong><br>min E<sub>n차 이웃</sub>(X) = −λ₂P₂(X) − λ₃P₃(X)<small>P₂, P₃: 2차·3차 이웃의 수<br>λ₂, λ₃: 각 항의 가중치</small></div></div></div>`,'APSP 총합을 그대로 넣기 어려워, QUBO가 다룰 수 있는, n차 이웃의 수를 쓰는 목적 함수로 바꾸었습니다.')},
+{a:205,b:211,f:()=>frame('n차 이웃의 수와 APSP','실험에서 관찰한 관계',`<div class="result"><div class="relation"><div>n차 이웃의 수<small>짧게 도달 가능한 정점</small></div><div class="down">↑<br>↓</div><div>APSP 총합<small>모든 정점 쌍의 최단거리 합</small></div></div></div>`,'n차 이웃의 수가 커질수록 APSP 총합이 감소하는 경향을 확인했다.')},
 {a:211,b:225,f:()=>nhopScatter()},
 {a:225,b:249,f:()=>frame('왜 면 단위로 나눌까요?','하드웨어에 맞는 문제 크기 · 전체 연결성',`<div class="prepWhy"><div><strong>작게 나눠서 풀기</strong><p>큐비트 수·연결 구조의 한계</p><b>작은 하위 문제 → 마이너 임베딩</b></div><div><strong>전체는 이어 두기</strong><p>각 부분을 따로 풀어도</p><b>순환 골격 → 전체 연결성 확보</b></div></div><style>#qg3 .prepWhy{position:absolute;left:7%;right:7%;top:35%;bottom:10%;display:grid;gap:20px;grid-template-columns:1fr 1fr}#qg3 .prepWhy>div{border-top:2px solid var(--accent);padding-top:18px}#qg3 .prepWhy strong{font-size:clamp(18px,2.6vw,32px);font-weight:500}#qg3 .prepWhy p{font-size:clamp(13px,1.7vw,22px);color:var(--quiet);margin:18px 0}#qg3 .prepWhy b{font-size:clamp(14px,1.8vw,23px);font-weight:500;word-break:keep-all}@media(max-width:600px){#qg3 .prepWhy{gap:12px;top:34%}#qg3 .prepWhy>div{padding-top:10px}#qg3 .prepWhy strong{font-size:16px}#qg3 .prepWhy p{font-size:11px;margin:12px 0}#qg3 .prepWhy b{font-size:12px}}</style>`,'')},
 {a:249,b:264,f:()=>preprocess()},
@@ -376,12 +376,12 @@ const cues=[
  [
   199,
   205,
-  "그래서 2-hop과 3-hop 도달 항을 쓰는 n-hop 목적함수로 대신했습니다."
+  "그래서 2차 이웃과 3차 이웃의 수를 쓰는 목적함수로 대신했습니다."
  ],
  [
   205,
   211,
-  "n-hop은 짧은 경로로 얼마나 많이 도달하는지를 봅니다."
+  "n차 이웃의 수는 짧은 경로로 얼마나 많은 정점에 도달하는지를 나타냅니다."
  ],
  [
   211,
