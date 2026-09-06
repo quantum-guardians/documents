@@ -84,6 +84,7 @@ html,body{margin:0;padding:0;background:#f3efe6;font-family:"Segoe UI","Malgun G
 #qg3:fullscreen .stage{flex:none;width:min(100%,calc((100dvh - 220px)*16/9));margin:0 auto}
 #qg3 .controls button{cursor:pointer}#qg3 .controls button:disabled{opacity:.4;cursor:default}
 #qg3 .controls button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body.exporting{margin:0;overflow:hidden}body.exporting #qg3{max-width:none;width:100%}body.exporting #qg3 .controls{display:none}
 @media(max-width:600px){#qg3{max-width:100%}#qg3:fullscreen .stage{width:min(100%,calc((100dvh - 300px)*4/3))}}
 </style><div class="stage" id="qg3stage"><div class="grid"></div><div id="qg3scene"></div></div><div id="qg3subtitle" class="subtitleBar" aria-live="polite"><span class="subtitleText"></span></div>
 <div class="viz-controls controls"><button type="button" id="qg3prev" aria-label="이전 대사">← 이전 대사</button><button type="button" id="qg3next" aria-label="다음 대사">다음 대사 →</button><span id="qg3slide" aria-live="polite"></span><button type="button" id="qg3replay">장면 다시 재생</button><label>모드 <select id="qg3mode"><option value="slides">발표 · 대사별 넘김</option><option value="video">영상 · 자동 넘김</option></select></label><button type="button" class="btn btn-primary" id="qg3play">애니메이션 일시정지</button><button type="button" id="qg3full">전체 화면</button><button type="button" class="btn" id="qg3reset">처음으로</button><label class="form-label">장면 <input id="qg3seek" class="form-range" type="range" min="0" max="336" step=".1" value="0"></label><label class="form-label">속도 <select id="qg3rate" class="form-select"><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4× 미리보기</option></select></label><span id="qg3time" class="time tabular-nums">00:00 / 05:36</span></div>
@@ -564,6 +565,10 @@ mode.onchange=()=>{cueIndex=t>=duration?cues.length-1:cueAt(t);if(mode.value==='
 seek.oninput=()=>{t=Math.min(Number(seek.value),duration-.001);cueIndex=cueAt(t);last=0;draw()};
 document.getElementById('qg3full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await root.requestFullscreen()}catch{document.getElementById('qg3full').textContent='전체 화면 사용 불가'}};
 document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey||(event.target.closest('input,select,textarea')||(event.key===' '&&event.target.closest('button'))))return;const actions={ArrowRight:()=>advance(1),PageDown:()=>advance(1),' ':()=>advance(1),ArrowLeft:()=>advance(-1),PageUp:()=>advance(-1),Home:()=>go(0),End:()=>goCue(cues.length-1),r:()=>go(idx),f:()=>document.getElementById('qg3full').click()};if(actions[event.key]){event.preventDefault();actions[event.key]()}});
-draw();setRunning(true)})()</script>
+draw();setRunning(true);
+// Used by the local recording page (video/record) to list cues and show each cue's scene.
+window.qg={cues,scenes,duration,goCue(index){mode.value='slides';goCue(index)},get cueIndex(){return cueIndex},get time(){return t},
+ start(){mode.value='video';rate.value='1';go(0)},
+ setExporting(on){document.body.classList.toggle('exporting',on)}}})()</script>
 
 </div>
