@@ -236,12 +236,12 @@ const cues=[
  [
   15,
   21,
-  "좁은 길에서 사람들이 서로 마주 오면 어떻게 될까요?"
+  "좁은 길에서 사람들이 마주 오면, 서로 비켜 가느라 느려지고 사람이 몰립니다."
  ],
  [
   21,
   27,
-  "서로 비켜 가느라 느려지고, 사람이 몰리기도 합니다."
+  "저희는 길마다 방향을 정해서 이런 충돌을 줄이려고 했습니다."
  ],
  [
   27,
@@ -534,7 +534,7 @@ for(const item of insertions){
 // timeline as written in `scenes`, so a span is moved past the edits above
 // before it is cut; later spans go first so earlier ones stay valid. Cues
 // inside a span go away; a scene left with no length is dropped.
-const removals=[[304,318],[292,304],[90,120]];
+const removals=[[304,318],[292,304],[90,120],[27,35]];
 const moved=x=>x+edits.filter(edit=>edit.at<=x).reduce((sum,edit)=>sum+edit.dur,0);
 for(const [from,to] of removals.map(([from,to])=>[moved(from),moved(to)]).sort((p,q)=>q[0]-p[0])){
  const dur=to-from;
