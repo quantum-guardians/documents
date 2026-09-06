@@ -38,7 +38,7 @@ li .s.done{color:var(--ok)}li .s.over,li .s.stale{color:var(--warm)}
 body.exporting header,body.exporting .panel{display:none}
 body.exporting main{display:block;height:auto}
 body.exporting .stage{border:0;display:block}
-body.exporting .stage iframe{display:block;width:1280px;height:883px}
+body.exporting .stage iframe{display:block}
 #exportOverlay{position:fixed;left:0;right:0;bottom:0;display:flex;gap:12px;align-items:center;padding:10px 20px;background:var(--ink);color:var(--paper);font-size:14px}
 #exportOverlay button{background:transparent;color:var(--paper);border-color:var(--paper)}
 @media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}.stage{border-right:0;border-bottom:1px solid var(--rule)}.stage iframe{aspect-ratio:16/11}}
@@ -198,6 +198,7 @@ async function exportVideo(mode){
  player.pause();
  document.body.classList.add('exporting');qg.setExporting(true);
  $('exportOverlay').hidden=false;$('exportProgress').textContent='화면 선택 창에서 이 탭을 고르세요.';
+ await fitFrame();
  let display;
  try{display=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'})}
  catch(error){finishExport();$('exportNote').textContent='화면 캡처를 시작하지 못했습니다: '+error.message;return}
@@ -232,16 +233,35 @@ async function exportVideo(mode){
  download(new Blob(parts,{type:'video/webm'}),mode==='fixed'?'quantum-guardian-introduction-fixed.webm':'quantum-guardian-introduction.webm');
  $('exportNote').textContent='webm 을 내려받았습니다. mp4 로 바꾸는 ffmpeg 명령은 README 를 보세요.';
 }
-function finishExport(){document.body.classList.remove('exporting');qg.setExporting(false);$('exportOverlay').hidden=true;qg.goCue(index)}
-// Recordings start and end with the key or mouse click that toggled them, so
-// drop 0.3 s at both ends, then also drop leading and trailing silence, keeping
-// 0.15 s of room tone, and fade 10 ms at the cuts.
+// Tab capture only records what is inside the viewport, so the presentation
+// is sized to fit it: full width when the window is wide enough, otherwise
+// scaled down. 44px stay free at the bottom for the progress overlay.
+async function fitFrame(){
+ window.scrollTo(0,0);
+ const maxWidth=Math.min(1280,document.documentElement.clientWidth),maxHeight=document.documentElement.clientHeight-44;
+ let width=maxWidth;
+ for(let pass=0;pass<3;pass++){
+  frame.style.width=width+'px';frame.style.height='10px';
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  const height=frame.contentDocument.documentElement.scrollHeight;
+  if(height<=maxHeight){frame.style.height=height+'px';return}
+  width=Math.floor(width*maxHeight/height)-2;
+ }
+ frame.style.height=maxHeight+'px';
+}
+function finishExport(){frame.style.width='';frame.style.height='';document.body.classList.remove('exporting');qg.setExporting(false);$('exportOverlay').hidden=true;qg.goCue(index)}
+// Recordings start and end with the key or mouse click that toggled them.
+// A click is a short transient, speech is not, so speech is taken to begin at
+// the first 0.1 s that stays loud and to end at the last such stretch; 0.15 s
+// of room tone is kept around it and 10 ms fades hide the cuts. Only 0.05 s
+// at each end is always dropped, so speech that starts at once survives.
 function trimBuffer(buffer){
- const rate=buffer.sampleRate,data=buffer.getChannelData(0),edge=Math.round(0.3*rate),window=Math.round(0.01*rate),pad=Math.round(0.15*rate);
+ const rate=buffer.sampleRate,data=buffer.getChannelData(0),edge=Math.round(0.05*rate),window=Math.round(0.01*rate),pad=Math.round(0.15*rate),hold=10;
  let start=edge,end=data.length-edge;if(end-start<rate*0.2){start=0;end=data.length}
  const loud=at=>{let sum=0;for(let i=at;i<Math.min(at+window,data.length);i++)sum+=data[i]*data[i];return Math.sqrt(sum/window)>0.01};
- let s=start;while(s+window<end&&!loud(s))s+=window;
- let e=end;while(e-window>s&&!loud(e-window))e-=window;
+ const sustained=at=>{for(let k=0;k<hold;k++)if(!loud(at+k*window))return false;return true};
+ let s=start;while(s+hold*window<end&&!sustained(s))s+=window;
+ let e=end;while(e-hold*window>s&&!sustained(e-hold*window))e-=window;
  s=Math.max(start,s-pad);e=Math.min(end,e+pad);if(e-s<rate*0.2){s=start;e=end}
  const out=new AudioBuffer({length:e-s,sampleRate:rate,numberOfChannels:1}),o=out.getChannelData(0);o.set(data.subarray(s,e));
  const fade=Math.min(Math.round(0.01*rate),o.length>>1);for(let i=0;i<fade;i++){o[i]*=i/fade;o[o.length-1-i]*=i/fade}
