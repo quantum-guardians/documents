@@ -1,13 +1,20 @@
 <meta charset="utf-8">
-<title>Quantum Guardian · Introduction</title>
+<title>Quantum Guardian 팀 · 연구 소개</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<div id="qg3" aria-label="Quantum Guardian 프로젝트 소개 발표">
+<div id="qg3" aria-label="Quantum Guardian 팀의 연구 소개 발표">
 <style>#qg3 .scene .caption{display:none}#qg3 .subtitleBar{height:64px;display:grid;place-items:center;padding:.55rem 1.2rem;text-align:center;background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:clamp(12px,1.15vw,16px);line-height:1.45;color:var(--ink)}#qg3 .subtitleText{display:block;max-width:94%;text-wrap:balance}@media(max-width:600px){#qg3 .subtitleBar{height:66px;padding:.45rem .7rem;font-size:11px;line-height:1.4}#qg3 .subtitleText{max-width:100%}}</style>
 <style>
 #qg3{--paper:light-dark(#f3efe6,#16191d);--ink:light-dark(#20252a,#ece9e2);--quiet:light-dark(#6d7479,#aeb4b8);--rule:light-dark(#c9c2b6,#3b4146);--accent:light-dark(#176b87,#63b5cd);--warm:light-dark(#c65d35,#e58a68);width:100%;color:var(--ink);font-family:inherit}#qg3 *{box-sizing:border-box}.stage{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--paper)}.stage:before{content:"";position:absolute;left:4%;top:5%;bottom:5%;width:1px;background:var(--rule)}.scene{position:absolute;inset:0;animation:enter .45s ease}.grid{display:none}.title{position:absolute;left:7%;top:8%;z-index:5;font-size:clamp(25px,4vw,52px);font-weight:500;letter-spacing:-.05em;line-height:1.08}.mini{position:absolute;left:7.2%;top:20%;z-index:5;color:var(--quiet);font-size:clamp(12px,1.45vw,18px)}.caption{position:absolute;left:7%;bottom:6%;z-index:8;color:var(--quiet);font-size:clamp(11px,1.25vw,16px)}svg{width:100%;height:100%}svg text{fill:var(--ink);font-family:inherit}.edge{stroke:var(--rule);stroke-width:2}.dir{stroke:var(--accent);stroke-width:3;stroke-dasharray:8 10;animation:flow 1.2s linear infinite}.bad{stroke:var(--warm);stroke-width:4}.node{fill:var(--paper);stroke:var(--accent);stroke-width:2}.person-a{fill:var(--accent)}.person-b{fill:var(--warm)}.bigNum{position:absolute;right:8%;top:29%;z-index:7;text-align:right}.bigNum b{display:block;font-size:clamp(38px,7vw,88px);font-weight:500;color:var(--accent);letter-spacing:-.06em}.bigNum span{color:var(--quiet)}.energy{position:absolute;right:8%;top:19%;z-index:7;text-align:right}.energy b{display:block;font-size:clamp(30px,5vw,62px);font-weight:500;color:var(--warm)}.formula{position:absolute;left:9%;right:7%;top:37%;display:flex;justify-content:center;align-items:center;gap:clamp(.5rem,2vw,2rem);font-size:clamp(15px,2.2vw,28px)}.term{padding:.75rem 1rem;border-bottom:2px solid var(--accent)}.arrow{color:var(--quiet)}.result{position:absolute;left:8%;right:7%;top:25%;bottom:14%;display:grid;place-items:center}.photo{width:100%;height:100%;object-fit:cover;object-position:center 42%;animation:ken 18s ease-out forwards}.shade{position:absolute;inset:0;background:linear-gradient(90deg,var(--paper),color-mix(in srgb,var(--paper) 48%,transparent) 48%,transparent 72%)}.photoCopy{position:absolute;left:7%;top:28%;z-index:7}.photoCopy b{font-size:clamp(30px,5vw,60px);font-weight:500}.photoCopy p{color:var(--quiet)}.end{position:absolute;inset:0;display:grid;place-items:center;text-align:center}.end b{font-size:clamp(28px,4.6vw,58px);font-weight:500;letter-spacing:-.05em}.end p{color:var(--quiet)}.relation{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem;width:82%;font-size:clamp(22px,4vw,52px);text-align:center}.relation small{display:block;margin-top:.7rem;color:var(--quiet);font-size:clamp(11px,1.3vw,16px)}.down{color:var(--warm);font-size:1.5em}.compare{width:84%;display:grid;grid-template-columns:1fr 1fr;gap:3rem}.compare h3{font-weight:500}.networkBox svg{height:230px}.bench{width:88%;display:grid;gap:1.2rem}.benchRow{display:grid;grid-template-columns:110px 1fr 80px;align-items:center;gap:1rem}.track{height:18px;background:var(--rule)}.fill{height:100%;background:var(--accent)}.fill.raw{background:var(--warm)}.legend{display:flex;gap:1.2rem;color:var(--quiet)}.controls{margin-top:.75rem}.controls .form-range{width:min(100%,520px)}.time{min-width:96px;color:var(--quiet)}.paused *{animation-play-state:paused!important}@keyframes flow{to{stroke-dashoffset:-18}}@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes ken{to{transform:scale(1.05)}}@media(prefers-reduced-motion:reduce){#qg3 *{animation:none!important}}
 </style>
 <style>#qg3 .roadbed{fill:light-dark(#d7d1c5,#30353a)}#qg3 .roadedge{stroke:var(--ink);stroke-width:4;fill:none}#qg3 .lane{stroke:var(--paper);stroke-width:2;stroke-dasharray:16 18}#qg3 .walkA{animation:walkA 5s linear infinite}#qg3 .walkB{animation:walkB 5s linear infinite}#qg3 .crowdPulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.5s ease-in-out infinite}#qg3 .equations{position:absolute;left:8%;right:7%;top:29%;display:grid;gap:1rem}#qg3 .eqMain{font-family:Cambria Math,serif;font-size:clamp(20px,3vw,38px);padding-bottom:.8rem;border-bottom:2px solid var(--accent)}#qg3 .eqParts{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}#qg3 .eqPart{padding:1rem;background:color-mix(in srgb,var(--paper) 84%,var(--rule));font-family:Cambria Math,serif;font-size:clamp(14px,1.65vw,21px)}#qg3 .eqPart small{display:block;margin-top:.45rem;color:var(--quiet);font-family:inherit}@keyframes walkA{from{transform:translateX(-220px)}to{transform:translateX(260px)}}@keyframes walkB{from{transform:translateX(220px)}to{transform:translateX(-260px)}}@keyframes pulse{50%{transform:scale(1.2);opacity:.18}}</style>
 <style>#qg3 .paused .scene{animation-play-state:running!important}#qg3 .mini{top:24%}#qg3 .bigNum{left:7%;right:auto;top:34%;text-align:left}@media(max-width:600px){#qg3 .stage{aspect-ratio:4/3}#qg3 .title{font-size:20px;top:7%}#qg3 .mini{font-size:10px;top:24%}#qg3 .bigNum{top:38%}#qg3 .bigNum b{font-size:34px}#qg3 .equations{top:29%;right:auto;width:128%;transform:scale(.72);transform-origin:top left}#qg3 .bench{transform:scale(.78)}#qg3 .compare{transform:scale(.84)}.controls{gap:8px;padding:10px 8px}.controls label{font-size:12px}.controls .form-range{width:180px}}</style>
+<style>
+#qg3 .conferenceScene .photoCopy{display:block;top:4%}
+#qg3 .conferenceScene .photoCopy b{display:block;font-size:clamp(18px,2.7vw,34px);line-height:1.15}
+#qg3 .conferenceScene .photoCopy b span{font-size:.8em}
+#qg3 .conferenceScene .photoCopy p{margin-top:8px;font-size:clamp(10px,1.3vw,17px);line-height:1.4}
+#qg3 .conferenceScene .photo{padding:0;position:absolute;top:34%;left:5%;width:90%;height:63%;object-fit:contain}
+</style>
 <style id="review-layout">
 html,body{margin:0;padding:0;background:#f3efe6;font-family:"Segoe UI","Malgun Gothic",Arial,sans-serif}
 #qg3{font-family:"Segoe UI","Malgun Gothic",Arial,sans-serif;--paper:#f3efe6;--ink:#20252a;--quiet:#596168;--rule:#c9c2b6;--accent:#176b87;--warm:#c65d35}
@@ -87,8 +94,27 @@ function mapMorph(){const p=[[430,160],[590,125],[760,175],[860,300],[720,410],[
 function frame(title,mini,body,cap){return `<section class="scene ${title.includes('<br>')?'coverScene':''}"><div class="title">${title}</div>${mini?`<div class="mini">${mini}</div>`:''}${body}<div class="caption">${cap}</div></section>`}
 function directionRule(){return `<div class="directionBody"><svg viewBox="240 190 520 270" role="img" aria-label="하나의 보행로에 정방향과 역방향을 정의하는 예시"><line x1="350" y1="300" x2="650" y2="300" stroke="var(--rule)" stroke-width="18"/><circle cx="350" cy="300" r="28" class="node"/><circle cx="650" cy="300" r="28" class="node"/><text x="350" y="307" text-anchor="middle" font-size="18">u</text><text x="650" y="307" text-anchor="middle" font-size="18">v</text><path d="M390 265H610" stroke="var(--accent)" stroke-width="5" marker-end="url(#arr)"/><text x="500" y="235" text-anchor="middle" font-size="20">xₑ = 0 · 기준 방향 u → v</text><path d="M610 345H390" stroke="var(--warm)" stroke-width="5" marker-end="url(#arr2)"/><text x="500" y="405" text-anchor="middle" font-size="20">xₑ = 1 · 반대 방향 v → u</text><defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="var(--accent)"/></marker><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="var(--warm)"/></marker></defs></svg></div>`}
 function apspWhy(){return '<section class="scene objectiveScene"><header><h2>줄이고 싶은 것은 전체 이동거리</h2><p>모든 출발지–도착지 쌍의 최단거리 합</p></header><div class="objectiveFormula">E(X) = APSP(X) = Σ<sub>u≠v</sub> d<sub>X</sub>(u,v)</div><div class="routeCompare"><div><svg viewBox="0 0 330 150"><path d="M30 115L30 35L295 35L295 115" fill="none" stroke="var(--warm)" stroke-width="5"/><circle cx="30" cy="115" r="7" fill="var(--warm)"/><circle cx="295" cy="115" r="7" fill="var(--warm)"/></svg><span>긴 우회 경로</span></div><div><svg viewBox="0 0 330 150"><path d="M30 115L295 115" stroke="var(--accent)" stroke-width="5"/><circle cx="30" cy="115" r="7" fill="var(--accent)"/><circle cx="295" cy="115" r="7" fill="var(--accent)"/></svg><span>짧고 직접적인 경로</span></div></div><p class="objectiveNote">APSP 감소 → 평균 이동거리 감소</p></section>'}
-function qaFlow(){return '<div class="qaBody"><div class="qaRow"><b>초기</b><span>양자 요동이 큰 상태</span><i>→</i><b>후기</b><span>문제의 에너지에 집중</span></div><svg viewBox="0 0 800 170" role="img" aria-label="시간에 따라 양자 요동을 줄이고 문제 에너지의 영향을 높입니다"><path d="M40 28C230 28 480 142 760 142" stroke="var(--accent)" fill="none" stroke-width="4"/><path d="M40 142C300 142 530 28 760 28" stroke="var(--warm)" fill="none" stroke-width="4"/><text x="45" y="18" font-size="17">양자 요동</text><text x="625" y="18" font-size="17">문제 에너지</text></svg><p>양자 요동을 점차 줄이며 낮은 에너지 상태를 탐색합니다.</p></div>'}
-// The illustrative mesh is a deterministic Delaunay triangulation; stages follow the player clock.
+// Conceptual illustration, not measured energy or a particle trajectory.
+// Background: https://docs.dwavequantum.com/en/latest/quantum_research/quantum_annealing_intro.html
+function qaFlow(){return `<div class="qaExplain"><div class="qaSteps"><span id="qaStep0">1 · 안정된 초기 상태 준비</span><span id="qaStep1">2 · 문제를 에너지에 반영</span><span id="qaStep2">3 · 낮은 에너지의 결과 읽기</span></div><svg viewBox="0 0 800 290" role="img" aria-label="단순한 초기 에너지 곡선이 문제를 반영한 여러 골짜기로 변하고 낮은 에너지의 후보를 강조하는 개념도"><path d="M55 25V245H760" fill="none" stroke="var(--quiet)"/><text x="58" y="18" font-size="15">에너지</text><text x="610" y="275" font-size="15">가능한 상태 · 개념도</text><path id="qaCurve" fill="none" stroke="var(--accent)" stroke-width="4"/><ellipse id="qaState" cx="395" cy="190" rx="50" ry="14" fill="var(--accent)" opacity=".22"/><text id="qaResult" x="600" y="235" text-anchor="middle" font-size="17" opacity="0">측정 → 0과 1의 결과</text></svg><p id="qaExplanation"></p><small>원리 설명용 그림 · 실제 상태 변화나 최적해를 보장하는 궤적은 아닙니다.</small></div><style>#qg3 .qaExplain{position:absolute;top:30%;bottom:4%;left:7%;right:7%;display:flex;flex-direction:column;gap:8px}#qg3 .qaSteps{display:flex;gap:12px;font-size:clamp(10px,1.4vw,18px)}#qg3 .qaSteps span{flex:1;padding:8px 0;border-top:3px solid var(--rule);color:var(--quiet)}#qg3 .qaSteps span.active{border-color:var(--accent);color:var(--accent);font-weight:600}#qg3 .qaExplain svg{flex:1;min-height:0}#qg3 .qaExplain p{margin:0;text-align:center;font-size:clamp(12px,1.7vw,22px)}#qg3 .qaExplain small{font-size:clamp(9px,1vw,13px);text-align:center;color:var(--quiet)}</style>`}
+function renderQA(time){
+ const clamp=x=>Math.max(0,Math.min(1,x));
+ const phase=time<157?0:time<162?1:2;
+ const mix=clamp((time-157)/4),result=clamp((time-162)/3);
+ const initial=x=>185-130*((x-395)/340)**2;
+ const problem=x=>85+100*Math.exp(-(((x-590)/95)**2))+55*Math.exp(-(((x-220)/75)**2))-30*Math.exp(-(((x-410)/65)**2));
+ const y=x=>initial(x)*(1-mix)+problem(x)*mix;
+ let d='';for(let x=70;x<=740;x+=5)d+=(x===70?'M':'L')+x+' '+y(x)+' ';
+ document.getElementById('qaCurve').setAttribute('d',d);
+ const x=395+(590-395)*result;
+ const state=document.getElementById('qaState');state.setAttribute('cx',x);state.setAttribute('cy',y(x));state.setAttribute('rx',50-28*result);
+ document.getElementById('qaResult').setAttribute('opacity',result);
+ for(let i=0;i<3;i++)document.getElementById('qaStep'+i).classList.toggle('active',i===phase);
+ document.getElementById('qaExplanation').textContent=['먼저, 준비하기 쉬운 낮은 에너지 상태에서 시작합니다.','풀려는 문제를 반영하도록 에너지 구조를 서서히 바꿉니다.','양자의 물리적 성질을 이용해 낮은 에너지의 해를 찾고 결과를 읽습니다.'][phase];
+}
+
+// This example uses a Delaunay mesh to illustrate existing faces and their merging.
+// Triangulation is not a preprocessing step; stages follow the player clock.
 const prepMesh=(()=>{
  const p=[];for(let r=0;r<6;r++)for(let c=0;c<8;c++)p.push([60+c*110+Math.sin(r*17+c*13)*17,35+r*65+Math.cos(r*11+c*7)*12]);
  const faces=[];
@@ -122,8 +148,8 @@ function preprocess(){
  return '<section class="scene prepScene"><style>'+
  '#qg3 .prepScene{animation:none}#qg3 .prepHead{position:absolute;left:7%;right:7%;top:5%;height:15%;display:flex;flex-direction:column;gap:8px}#qg3 .prepHead h2{margin:0;font-size:clamp(20px,3vw,42px);line-height:1.15;font-weight:500}#qg3 .prepHead p{margin:0;font-size:clamp(10px,1.3vw,17px);color:var(--quiet)}'+
  '#qg3 .prepCanvas{position:absolute;left:7%;right:7%;top:24%;bottom:19%}#qg3 .prepCanvas svg{display:block;width:100%;height:100%}#qg3 .prepStatus{position:absolute;left:7%;right:7%;bottom:5%;height:10%;display:flex;align-items:center;justify-content:center;gap:14px;font-size:clamp(14px,1.9vw,25px)}#qg3 .prepCount{font-size:.72em;color:var(--quiet);font-variant-numeric:tabular-nums}'+
- '</style><header class="prepHead"><h2>순환 골격을 만드는 과정</h2><p>면 분할 → 클러스터링 → Blossom 보정 → 순환 골격 · 개념 예시</p></header>'+
- '<div class="prepCanvas"><svg viewBox="0 0 900 420" role="img" aria-label="48개 정점의 삼각분할 그래프가 네 전처리 단계를 거쳐 변화합니다">'+
+ '</style><header class="prepHead"><h2>순환 골격을 만드는 과정</h2><p>면 구분 → 인접한 면 합치기 → Blossom 보정 → 순환 골격 · 개념 예시</p></header>'+
+ '<div class="prepCanvas"><svg viewBox="0 0 900 420" role="img" aria-label="48개 정점의 예시 그래프에서 면을 구분하고 인접한 면을 합친 뒤 순환 골격을 구성합니다">'+
  '<g id="prepFaces">'+faces.map((f,i)=>poly(f,colors[i%colors.length])).join('')+'</g>'+
  '<g id="prepClusters" opacity="0">'+faces.map((f,i)=>poly(f,colors[groups[i]%colors.length])).join('')+'</g>'+
  '<g id="prepInternal" opacity=".65">'+edges.filter(e=>e.fs.length===2&&groups[e.fs[0]]===groups[e.fs[1]]).map(e=>line(e,'var(--quiet)',1.1)).join('')+'</g>'+
@@ -131,7 +157,7 @@ function preprocess(){
  '<g id="prepMatching" opacity="0">'+matched.map(e=>line(e,'var(--warm)',5)).join('')+'</g>'+
  '<g id="prepSkeleton" opacity="0">'+edges.filter(e=>e.fs.length===1||groups[e.fs[0]]!==groups[e.fs[1]]).map(e=>line(e,'var(--accent)',3.8)).join('')+'</g>'+
  '<g>'+p.map(([x,y])=>'<circle cx="'+x+'" cy="'+y+'" r="3" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.1"/>').join('')+'</g></svg></div>'+
- '<div class="prepStatus"><span class="prepCount" id="prepCount">1 / 4</span><span id="prepLabel">작은 삼각형 면으로 분할</span></div></section>';
+ '<div class="prepStatus"><span class="prepCount" id="prepCount">1 / 4</span><span id="prepLabel">그래프의 면 구분</span></div></section>';
 }
 function renderPreprocess(time){
  const blend=(a,b)=>{const q=Math.max(0,Math.min(1,(time-a)/(b-a)));return q*q*(3-2*q)};
@@ -139,7 +165,7 @@ function renderPreprocess(time){
  for(const [id,opacity] of [['prepInternal',.65*(1-cluster)+.06*cluster],['prepBorders',.65+.25*cluster],['prepFaces',1-cluster],['prepClusters',cluster*(1-.5*skeleton)],['prepMatching',match*(1-skeleton)],['prepSkeleton',skeleton]]){const el=document.getElementById(id);if(el)el.setAttribute('opacity',opacity)}
  const step=time<229?0:time<233?1:time<237?2:3;
  const label=document.getElementById('prepLabel'),count=document.getElementById('prepCount');
- if(label)label.textContent=['작은 삼각형 면으로 분할','인접한 면을 클러스터로 묶기','Blossom 보정 대상 표시','순환 골격 완성'][step];
+ if(label)label.textContent=['그래프의 면 구분','인접한 면을 합쳐 클러스터 구성','Blossom 보정 대상 표시','순환 골격 완성'][step];
  if(count)count.textContent=(step+1)+' / 4';
 }
 
@@ -168,7 +194,7 @@ function resultsConclusion(){return frame('결과를 정리하면','500개 정�
 function nhopScatter(){return frame('n-hop 이웃 수와 APSP 총합','정점 50개 · Delaunay 간선 137개 · 방향 조합 500개 측정','<div class="scatterBox"><img src="./apsp_nhop_v50_delaunay.png" alt="APSP 총합과 2-hop·3-hop·4-hop 이웃 수의 산점도 3개"></div><div class="scatterNote">가로축 APSP 총합 · 세로축 n-hop 이웃 수 · 2-hop, 3-hop, 4-hop 세 경우 모두 오른쪽 아래로 기울어져 있다</div><style>#qg3 .scatterBox{position:absolute;left:5%;right:5%;top:31%;bottom:15%;display:grid;place-items:center;background:#fff;border:1px solid var(--rule);padding:1%}#qg3 .scatterBox img{max-width:100%;max-height:100%;display:block}#qg3 .scatterNote{position:absolute;left:7%;right:7%;bottom:4%;text-align:center;font-size:clamp(10px,1.3vw,17px);color:var(--quiet);word-break:keep-all}@media(max-width:600px){#qg3 .scatterBox{left:3%;right:3%;top:30%;bottom:17%}}</style>','')}
 
 const scenes=[
-{a:0,b:15,f:()=>frame('양자 어닐링 기반<br>보행 네트워크 방향 최적화','Quantum Guardian · 졸업 과제',graph(7,10,true),'프로젝트 소개')},
+{a:0,b:15,f:()=>frame('양자 어닐링 기반<br>보행 네트워크 방향 최적화','Quantum Guardian 팀 · 다중 밀집 사고 예방을 위한 연구',graph(7,10,true),'프로젝트 소개')},
 {a:15,b:35,f:()=>frame('대향 흐름의 충돌','좁은 보행 통로에서 마주 보는 두 흐름',`<svg viewBox="0 0 1000 562"><path d="M90 220Q500 175 910 220L875 395Q500 350 125 395Z" class="roadbed"/><path d="M90 220Q500 175 910 220M125 395Q500 350 875 395" class="roadedge"/><path d="M110 300Q500 260 890 300" class="lane" fill="none"/><g class="walkA">${[[180,255],[235,245],[290,252],[345,240]].map(q=>`<g transform="translate(${q[0]} ${q[1]})"><circle cy="-10" r="8" class="person-a"/><path d="M0 0V22M0 8L-11 17M0 8L11 17M0 22L-9 38M0 22L9 38" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g>`).join('')}</g><g class="walkB">${[[820,325],[765,315],[710,326],[655,312]].map(q=>`<g transform="translate(${q[0]} ${q[1]})"><circle cy="-10" r="8" class="person-b"/><path d="M0 0V22M0 8L-11 17M0 8L11 17M0 22L-9 38M0 22L9 38" stroke="var(--warm)" stroke-width="5" stroke-linecap="round"/></g>`).join('')}</g><ellipse cx="500" cy="300" rx="92" ry="70" fill="var(--warm)" opacity=".12" class="crowdPulse"/><text x="500" y="430" text-anchor="middle" font-size="18">서로 반대 방향의 흐름이 중앙에서 충돌</text></svg>`,'보행 방향을 조정해 중앙의 충돌과 밀집을 줄이는 문제를 다룬다.')},
 {a:35,b:55,f:()=>frame('보행 공간을 그래프로','교차로는 정점, 보행로는 간선',mapMorph(),'실제 보행로를 가중치 그래프 G=(V,E,W)로 표현한다.')},
 {a:55,b:75,f:()=>frame('방향 변수 xₑ','먼저 간선마다 기준 방향 u → v를 정한다',directionRule(),'xₑ=0은 기준 방향, xₑ=1은 그 반대 방향을 뜻한다.')},
@@ -177,7 +203,7 @@ const scenes=[
 {a:105,b:120,f:()=>frame('간선 20개','직접 탐색하기 어려운 규모',graph(12,20,true)+`<div class="bigNum"><b>100만 가지 이상</b><span>방향 조합</span></div>`,'방향 조합의 수가 빠르게 커진다.')},
 {a:120,b:135,f:()=>frame('간선 30개','약 10억 가지 방향 조합',graph(16,30,true)+`<div class="bigNum"><b>약 10억 가지</b><span>방향 조합</span></div>`,'모든 후보를 하나씩 평가하는 방식은 비효율적이다.')},
 {a:135,b:150,f:()=>apspWhy()},
-{a:150,b:166,f:()=>frame('양자 어닐링 · QA','에너지가 가장 낮은 이진 변수 조합을 찾는 방식',qaFlow(),'중첩 상태에서 탐색을 시작하고, 터널링을 이용해 낮은 에너지 해를 찾는다.')},
+{a:150,b:166,f:()=>frame('양자 어닐링 · QA','상태 준비 → 문제 반영 → 낮은 에너지의 결과',qaFlow(),'양자의 물리적 성질을 이용해 낮은 에너지의 해를 찾고 측정한다.')},
 {a:166,b:180,f:()=>frame('에너지 지형과 터널링','낮은 골짜기는 더 낮은 목적함수 값 · 개념도',energyScene(),'')},
 {a:180,b:192,f:()=>frame('QUBO란?','목적함수를 이진 변수의 1차·2차 항으로 표현하는 형식',`<div class="formula"><div class="term">xᵢ</div><div class="arrow">+</div><div class="term">xᵢxⱼ</div><div class="arrow">→</div><div class="term">min E<sub>QUBO</sub>(x)</div></div>`,'QUBO는 APSP 그 자체가 아니라, 양자 어닐링이 계산할 수 있도록 바꾼 목적함수의 표현 형식입니다.')},
 {a:192,b:205,f:()=>frame('APSP를 n-hop으로 바꾸기','QUBO가 다룰 수 있는 근사 목적',`<div class="equations" style="grid-template-columns:1fr"><div class="eqMain">APSP(X) <span class="arrow">→</span> E<sub>n-hop</sub>(X)</div><div class="eqParts" style="grid-template-columns:1fr"><div class="eqPart"><strong>QUBO용 n-hop 목적</strong><br>min E<sub>n-hop</sub>(X) = −λ₂P₂(X) − λ₃P₃(X)<small>P₂, P₃: 2-hop·3-hop 도달 항<br>λ₂, λ₃: 각 항의 가중치</small></div></div></div>`,'APSP 총합을 그대로 넣기 어려워, QUBO가 다룰 수 있는 n-hop 목적 함수로 바꾸었습니다.')},
@@ -188,19 +214,19 @@ const scenes=[
 {a:264,b:284,f:()=>resultPlot('apsp_reduction')},
 {a:284,b:304,f:()=>resultPlot('spent_time')},
 {a:304,b:318,f:()=>resultsConclusion()},
-{a:318,b:329,f:()=>`<section class="scene"><img class="photo" src="./ozeki_photo.jpeg" alt="AQC 2026 기념사진"><div class="shade"></div><div class="photoCopy"><b>AQC 2026</b><p>학회 참석</p></div></section>`},
-{a:329,b:336,f:()=>`<section class="scene"><div class="end"><div><b>양자 어닐링 기반<br>보행 네트워크 방향 최적화</b><p>Quantum Guardian</p></div></div></section>`}
+{a:318,b:338,f:()=>`<section class="scene conferenceScene"><img class="photo" src="./ozeki_photo.jpeg" alt="AQC 2026 기념사진"><div class="shade"></div><div class="photoCopy"><b>Adiabatic Quantum Computing<br><span>(AQC) 2026</span></b><p>일본 도쿄 · Science Tokyo<br>포스터 발표로 연구 공유</p></div></section>`},
+{a:338,b:345,f:()=>`<section class="scene"><div class="end"><div><b>양자 어닐링 기반<br>보행 네트워크 방향 최적화</b><p>Quantum Guardian 팀</p></div></div></section>`}
 ];
 const cues=[
  [
   0,
   6,
-  "안녕하세요. 저희 졸업 과제, Quantum Guardian을 소개하겠습니다."
+  "안녕하세요. 저희는 Quantum Guardian 팀입니다. 저희가 진행한 연구를 소개하겠습니다."
  ],
  [
   6,
   11,
-  "사람들이 오가는 길의 방향을 정하는 프로젝트인데요."
+  "다중 밀집 사고 예방을 목표로, 사람들이 오가는 길의 방향을 정하는 연구를 진행했습니다."
  ],
  [
   11,
@@ -310,17 +336,17 @@ const cues=[
  [
   150,
   157,
-  "이런 조합을 찾는 데 활용한 방법이 양자 어닐링, QA입니다."
+  "양자 어닐링은 먼저 양자 상태를 준비하기 쉬운, 안정된 낮은 에너지 상태로 만듭니다."
  ],
  [
   157,
   162,
-  "처음에는 양자 요동이 큰 상태에서 시작하고요."
+  "그다음, 풀려는 문제를 에너지 구조에 서서히 반영합니다. 좋은 답일수록 에너지가 낮도록 만드는 거죠."
  ],
  [
   162,
   166,
-  "이를 점차 줄이면서 에너지가 낮은 해를 찾습니다."
+  "양자의 물리적 성질을 이용해 낮은 에너지의 해를 찾고, 마지막에 측정해서 0과 1의 결과를 얻습니다."
  ],
  [
   166,
@@ -390,12 +416,12 @@ const cues=[
  [
   249,
   253,
-  "먼저, 그래프를 작은 삼각형 면으로 나눕니다."
+  "먼저, 그래프를 이루는 면들을 구분합니다."
  ],
  [
   253,
   257,
-  "그다음, 이웃한 면들을 클러스터로 묶습니다."
+  "그다음, 서로 이웃한 면들을 합쳐 클러스터를 만듭니다."
  ],
  [
   257,
@@ -449,42 +475,58 @@ const cues=[
  ],
  [
   318,
-  324,
-  "프로젝트를 진행하면서 AQC 2026에도 참석했습니다."
+  330,
+  "저희는 일본 도쿄에서 열린 양자 어닐링 분야의 국제학회, Adiabatic Quantum Computing, AQC 2026에 참가했습니다."
  ],
  [
-  324,
-  329,
-  ""
+  330,
+  338,
+  "이곳에서 포스터 발표를 할 기회를 얻어, 저희 연구를 소개하고 공유하고 왔습니다."
  ],
  [
-  329,
-  333,
-  "지금까지 Quantum Guardian을 소개해 드렸습니다."
+  338,
+  342,
+  "지금까지 저희 팀의 연구를 소개해 드렸습니다."
  ],
  [
-  333,
-  336,
+  342,
+  345,
   "들어주셔서 감사합니다."
  ]
 ];
+// Baseline definitions follow paper/ko/main.tex (experimental setup).
+const baselines=[
+ {name:'SA',english:'Simulated Annealing',detail:'가끔 나쁜 변화도 허용하며 더 좋은 방향을 탐색',line:'SA는 가끔 나빠지는 변화도 허용하면서 더 좋은 방향 조합을 찾습니다.'},
+ {name:'ILS',english:'Iterated Local Search',detail:'개선하다 막히면 방향을 흔들고 다시 탐색',line:'ILS는 방향을 개선하다 막히면 조합을 흔들고 다시 탐색합니다.'},
+ {name:'Robbin',english:'Robbins 방식',detail:'모든 정점 사이를 오갈 수 있도록 방향을 구성',line:'Robbin은 이동거리 최소화보다, 모든 정점 사이를 오갈 수 있게 방향을 정하는 방법입니다.'}
+];
+function baselineScene(){return frame('비교한 세 가지 방법','모두 고전 컴퓨터에서 실행하는 방법',`<div class="baselineBody">${baselines.map(item=>`<div class="baselineRow"><div><b>${item.name}</b><small>${item.english}</small></div><p>${item.detail}</p></div>`).join('')}</div><style>#qg3 .baselineBody{position:absolute;left:8%;right:8%;top:34%;bottom:9%;display:grid;grid-template-rows:repeat(3,1fr);gap:14px}#qg3 .baselineRow{display:grid;grid-template-columns:30% 1fr;align-items:center;gap:20px;border-top:1px solid var(--rule)}#qg3 .baselineRow b{color:var(--accent);font-size:clamp(18px,2.5vw,32px)}#qg3 .baselineRow small{display:block;color:var(--quiet);font-size:clamp(9px,1.1vw,14px);margin-top:4px}#qg3 .baselineRow p{margin:0;font-size:clamp(13px,1.9vw,24px);word-break:keep-all;line-height:1.4}@media(max-width:600px){#qg3 .baselineBody{gap:8px}#qg3 .baselineRow{gap:12px}}</style>`,'')}
+const insertionTime=264,baselineDuration=8,addedDuration=baselines.length*baselineDuration;
+const sceneInsertion=scenes.findIndex(scene=>scene.a===insertionTime);
+for(const scene of scenes){if(scene.a>=insertionTime){scene.a+=addedDuration;scene.b+=addedDuration}}
+scenes.splice(sceneInsertion,0,{a:insertionTime,b:insertionTime+addedDuration,f:baselineScene});
+const cueInsertion=cues.findIndex(cue=>cue[0]===insertionTime);
+for(const cue of cues){if(cue[0]>=insertionTime){cue[0]+=addedDuration;cue[1]+=addedDuration}}
+cues.splice(cueInsertion,0,...baselines.map((item,i)=>[insertionTime+i*baselineDuration,insertionTime+(i+1)*baselineDuration,item.line]));
+const duration=scenes[scenes.length-1].b;
+seek.max=duration;
 let cueIndex=0;
 const subtitle=document.querySelector('#qg3subtitle .subtitleText');
 function cueAt(time){return cues.findIndex(c=>time>=c[0]&&time<c[1])}
 function advance(direction){goCue(cueIndex+direction)}
 function goCue(index){index=Math.max(0,Math.min(cues.length-1,index));cueIndex=index;t=cues[index][0];last=0;draw();setRunning(true)}
-function draw(){const ni=scenes.findIndex(x=>(t>=x.a&&t<x.b)||(t===336&&x.b===336));if(ni!==idx){idx=ni;host.innerHTML=scenes[ni].f()}if(t>=35&&t<55){const p=Math.max(0,Math.min(1,(t-38)/14)),map=document.getElementById('mapLayer'),g=document.getElementById('graphLayer'),label=document.getElementById('mapLabel');if(map&&g){map.style.opacity=String(1-p);map.style.transform=`scale(${1-.035*p})`;map.style.transformOrigin='650px 280px';g.style.opacity=String(p);g.style.transform=`scale(${.94+.06*p})`;g.style.transformOrigin='650px 280px';label.textContent=p<.48?'도시 보행 공간':p<.82?'교차로와 보행로 추출':'보행 네트워크 그래프'}}if(t>=166&&t<180)renderEnergy(t);if(t>=249&&t<264)renderPreprocess(t-24);if(mode.value==='video')cueIndex=t>=336?cues.length-1:cueAt(t);subtitle.textContent=cues[cueIndex][2];seek.value=t;prev.disabled=cueIndex===0;next.disabled=cueIndex===cues.length-1;const sceneCues=cues.filter(c=>c[0]>=scenes[ni].a&&c[0]<scenes[ni].b);const line=sceneCues.findIndex(c=>c===cues[cueIndex])+1;counter.textContent=`슬라이드 ${ni+1} / ${scenes.length} · 대사 ${line} / ${sceneCues.length}`;clock.textContent=`${fmt(t)} / 05:36`}
+function draw(){const ni=scenes.findIndex(x=>(t>=x.a&&t<x.b)||(t===duration&&x.b===duration));if(ni!==idx){idx=ni;host.innerHTML=scenes[ni].f()}if(t>=35&&t<55){const p=Math.max(0,Math.min(1,(t-38)/14)),map=document.getElementById('mapLayer'),g=document.getElementById('graphLayer'),label=document.getElementById('mapLabel');if(map&&g){map.style.opacity=String(1-p);map.style.transform=`scale(${1-.035*p})`;map.style.transformOrigin='650px 280px';g.style.opacity=String(p);g.style.transform=`scale(${.94+.06*p})`;g.style.transformOrigin='650px 280px';label.textContent=p<.48?'도시 보행 공간':p<.82?'교차로와 보행로 추출':'보행 네트워크 그래프'}}if(t>=150&&t<166)renderQA(t);if(t>=166&&t<180)renderEnergy(t);if(t>=249&&t<264)renderPreprocess(t-24);if(mode.value==='video')cueIndex=t>=duration?cues.length-1:cueAt(t);subtitle.textContent=cues[cueIndex][2];seek.value=t;prev.disabled=cueIndex===0;next.disabled=cueIndex===cues.length-1;const sceneCues=cues.filter(c=>c[0]>=scenes[ni].a&&c[0]<scenes[ni].b);const line=sceneCues.findIndex(c=>c===cues[cueIndex])+1;counter.textContent=`슬라이드 ${ni+1} / ${scenes.length} · 대사 ${line} / ${sceneCues.length}`;clock.textContent=`${fmt(t)} / ${fmt(duration)}`}
 const prev=document.getElementById('qg3prev'),next=document.getElementById('qg3next'),counter=document.getElementById('qg3slide'),mode=document.getElementById('qg3mode');
 function setRunning(value){run=value;play.textContent=run?'애니메이션 일시정지':'애니메이션 재생';stage.classList.toggle('paused',!run);last=0;cancelAnimationFrame(raf);if(run)raf=requestAnimationFrame(tick)}
 function go(index){index=Math.max(0,Math.min(scenes.length-1,index));idx=-1;goCue(cueAt(scenes[index].a))}
 function tick(ts){if(!run)return;if(!last)last=ts;const delta=(ts-last)/1000*Number(rate.value);last=ts;
-if(mode.value==='slides'){t=Math.min(t+delta,cues[cueIndex][1]-.001)}else{t=Math.min(t+delta,336)}
-draw();if(mode.value==='video'&&t>=336){setRunning(false);return}raf=requestAnimationFrame(tick)}
-play.onclick=()=>{if(t>=336&&mode.value==='video')go(0);else setRunning(!run)};
+if(mode.value==='slides'){t=Math.min(t+delta,cues[cueIndex][1]-.001)}else{t=Math.min(t+delta,duration)}
+draw();if(mode.value==='video'&&t>=duration){setRunning(false);return}raf=requestAnimationFrame(tick)}
+play.onclick=()=>{if(t>=duration&&mode.value==='video')go(0);else setRunning(!run)};
 prev.onclick=()=>advance(-1);next.onclick=()=>advance(1);reset.onclick=()=>go(0);
 document.getElementById('qg3replay').onclick=()=>go(idx);
-mode.onchange=()=>{cueIndex=t>=336?cues.length-1:cueAt(t);if(mode.value==='slides')goCue(cueIndex);else setRunning(true)};
-seek.oninput=()=>{t=Math.min(Number(seek.value),335.999);cueIndex=cueAt(t);last=0;draw()};
+mode.onchange=()=>{cueIndex=t>=duration?cues.length-1:cueAt(t);if(mode.value==='slides')goCue(cueIndex);else setRunning(true)};
+seek.oninput=()=>{t=Math.min(Number(seek.value),duration-.001);cueIndex=cueAt(t);last=0;draw()};
 document.getElementById('qg3full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await root.requestFullscreen()}catch{document.getElementById('qg3full').textContent='전체 화면 사용 불가'}};
 document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey||(event.target.closest('input,select,textarea')||(event.key===' '&&event.target.closest('button'))))return;const actions={ArrowRight:()=>advance(1),PageDown:()=>advance(1),' ':()=>advance(1),ArrowLeft:()=>advance(-1),PageUp:()=>advance(-1),Home:()=>go(0),End:()=>goCue(cues.length-1),r:()=>go(idx),f:()=>document.getElementById('qg3full').click()};if(actions[event.key]){event.preventDefault();actions[event.key]()}});
 draw();setRunning(true)})()</script>
