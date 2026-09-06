@@ -311,7 +311,7 @@ const cues=[
  [
   120,
   128,
-  "30개면 약 10억 가지입니다."
+  "간선이 하나 늘 때마다 2배가 되어, 30개면 약 10억 가지입니다."
  ],
  [
   128,
@@ -502,14 +502,6 @@ const baselines=[
 ];
 function baselineScene(){return frame('비교한 세 가지 방법','모두 고전 컴퓨터에서 실행하는 방법',`<div class="baselineBody">${baselines.map(item=>`<div class="baselineRow"><div><b>${item.name}</b><small>${item.english}</small></div><p>${item.detail}</p></div>`).join('')}</div><style>#qg3 .baselineBody{position:absolute;left:8%;right:8%;top:34%;bottom:9%;display:grid;grid-template-rows:repeat(3,1fr);gap:14px}#qg3 .baselineRow{display:grid;grid-template-columns:30% 1fr;align-items:center;gap:20px;border-top:1px solid var(--rule)}#qg3 .baselineRow b{color:var(--accent);font-size:clamp(18px,2.5vw,32px)}#qg3 .baselineRow small{display:block;color:var(--quiet);font-size:clamp(9px,1.1vw,14px);margin-top:4px}#qg3 .baselineRow p{margin:0;font-size:clamp(13px,1.9vw,24px);word-break:keep-all;line-height:1.4}@media(max-width:600px){#qg3 .baselineBody{gap:8px}#qg3 .baselineRow{gap:12px}}</style>`,'')}
 for(const scene of scenes)scene.o=scene.a;
-// Spans cut from the timeline above, latest first so earlier times stay valid.
-// Cues inside a span go away; a scene left with no length is dropped.
-const removals=[[304,318],[292,304]];
-for(const [from,to] of removals){
- const dur=to-from;
- for(let i=cues.length-1;i>=0;i--){const cue=cues[i];if(cue[0]>=from&&cue[1]<=to)cues.splice(i,1);else if(cue[0]>=to){cue[0]-=dur;cue[1]-=dur}else if(cue[1]>to)cue[1]-=dur}
- for(let i=scenes.length-1;i>=0;i--){const scene=scenes[i];if(scene.a>=to){scene.a-=dur;scene.b-=dur}else if(scene.b>from)scene.b=Math.max(scene.a,scene.b-dur);if(scene.a===scene.b)scenes.splice(i,1)}
-}
 const baselineIntro='결과를 보기 전에, 어떤 방법들과 비교했는지 알려드리겠습니다. 세 가지 모두 고전 컴퓨터에서 실행하는 방법입니다.';
 const insertionTime=264,baselineDuration=8,addedDuration=(baselines.length+1)*baselineDuration;
 const sceneInsertion=scenes.findIndex(scene=>scene.a===insertionTime);
@@ -528,13 +520,26 @@ const insertions=[
  {at:141,dur:2,kind:'end'},
  {at:150,dur:6,kind:'start',text:'이제 이 문제를 푸는 데 쓴 양자 어닐링이 무엇인지 설명드리겠습니다.'}
 ];
+const edits=[{at:264,dur:addedDuration}];
 let offset=0;
 for(const item of insertions){
+ edits.push({at:item.at,dur:item.dur});
  const at=item.at+offset,after=item.kind==='start';
  for(const scene of scenes){if(scene.a>at||(scene.a===at&&!after))scene.a+=item.dur;if(scene.b>at||(scene.b===at&&!after))scene.b+=item.dur;if(after&&scene.a===at)scene.lead=(scene.lead||0)+item.dur}
  for(const cue of cues){if(cue[0]>=at){cue[0]+=item.dur;cue[1]+=item.dur}else if(cue[1]>at||(cue[1]===at&&!item.text))cue[1]+=item.dur}
  if(item.text)cues.splice(cues.findIndex(cue=>cue[0]>=at+item.dur),0,[at,at+item.dur,item.text]);
  offset+=item.dur;
+}
+// Spans cut from the timeline above. `at`/`from`/`to` are all times on the
+// timeline as written in `scenes`, so a span is moved past the edits above
+// before it is cut; later spans go first so earlier ones stay valid. Cues
+// inside a span go away; a scene left with no length is dropped.
+const removals=[[304,318],[292,304],[90,120]];
+const moved=x=>x+edits.filter(edit=>edit.at<=x).reduce((sum,edit)=>sum+edit.dur,0);
+for(const [from,to] of removals.map(([from,to])=>[moved(from),moved(to)]).sort((p,q)=>q[0]-p[0])){
+ const dur=to-from;
+ for(let i=cues.length-1;i>=0;i--){const cue=cues[i];if(cue[0]>=from&&cue[1]<=to)cues.splice(i,1);else if(cue[0]>=to){cue[0]-=dur;cue[1]-=dur}else if(cue[1]>to)cue[1]-=dur}
+ for(let i=scenes.length-1;i>=0;i--){const scene=scenes[i];if(scene.a>=to){scene.a-=dur;scene.b-=dur}else if(scene.b>from)scene.b=Math.max(scene.a,scene.b-dur);if(scene.a===scene.b)scenes.splice(i,1)}
 }
 const duration=scenes[scenes.length-1].b;
 seek.max=duration;
