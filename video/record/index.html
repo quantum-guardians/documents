@@ -65,7 +65,8 @@ body.exporting .stage iframe{display:block;width:1280px;height:883px}
    <button id="exportFixed">시간표 위치에 합친 wav</button>
    <button id="exportPushed">겹치지 않게 밀어서 합친 wav</button>
    <button id="exportClips">대사별 파일 전부</button>
-   <button id="exportVideo">동영상(webm)으로 내보내기</button>
+   <button id="exportVideoFollow">동영상 · 녹음 길이에 맞춰</button>
+   <button id="exportVideoFixed">동영상 · 영상 시간표대로</button>
    <span id="exportNote"></span>
   </div>
  </section>
@@ -177,12 +178,15 @@ async function render(mode){
 }
 
 // Video export: Chrome captures this tab, cropped to the presentation iframe,
-// while the presentation plays from 0 in real time and the fixed-timeline
-// narration mix is fed in as the audio track. Takes as long as the video.
+// while the presentation plays in real time with the narration as the audio
+// track. 'follow' shows each cue for as long as its recording (plus a gap) and
+// then moves on; 'fixed' plays the video timeline with clips at cue starts.
+// Takes as long as the resulting video.
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function exportVideo(){
+async function exportVideo(mode){
  if(!navigator.mediaDevices.getDisplayMedia){$('exportNote').textContent='이 브라우저는 탭 화면 캡처를 지원하지 않습니다. Chrome 을 쓰세요.';return}
  const {entries,buffer}=await mixdown('fixed');
+ const decoded=new Map(entries);
  $('exportNote').textContent=entries.length?'':'녹음본이 없어 소리 없는 영상을 만듭니다.';
  player.pause();
  document.body.classList.add('exporting');qg.setExporting(true);
@@ -194,19 +198,31 @@ async function exportVideo(){
  if(window.CropTarget&&track.cropTo){try{await track.cropTo(await CropTarget.fromElement(frame))}catch{}}
  const destination=audioContext.createMediaStreamDestination();
  const source=audioContext.createBufferSource();source.buffer=buffer;source.connect(destination);
+ const playing=new Set();
  const recorder=new MediaRecorder(new MediaStream([track,...destination.stream.getAudioTracks()]),{mimeType:'video/webm;codecs=vp9,opus',videoBitsPerSecond:8_000_000});
  const parts=[];recorder.ondataavailable=event=>parts.push(event.data);
  const done=new Promise(resolve=>{recorder.onstop=resolve});
- let stopped=false;const stop=()=>{if(stopped)return;stopped=true;recorder.stop();source.stop();track.stop()};
+ let stopped=false;const stop=()=>{if(stopped)return;stopped=true;recorder.stop();for(const node of playing)try{node.stop()}catch{}track.stop()};
  track.onended=stop;$('exportStop').onclick=stop;
  await audioContext.resume();
  recorder.start(1000);
  await sleep(500);
- source.start();qg.start();
- while(!stopped&&qg.time<qg.duration){$('exportProgress').textContent=`녹화 중 ${fmt(Math.floor(qg.time))} / ${fmt(qg.duration)}`;await sleep(250)}
+ if(mode==='fixed'){
+  playing.add(source);source.start();qg.start();
+  while(!stopped&&qg.time<qg.duration){$('exportProgress').textContent=`녹화 중 ${fmt(Math.floor(qg.time))} / ${fmt(qg.duration)}`;await sleep(250)}
+ }else{
+  const gap=0.5;let elapsed=0;// seconds of silence after each recording before the next cue
+  for(let i=0;i<cues.length&&!stopped;i++){
+   qg.goCue(i);
+   const clip=decoded.get(i),seconds=clip?clip.duration+gap:cues[i][1]-cues[i][0];
+   if(clip){const node=audioContext.createBufferSource();node.buffer=clip;node.connect(destination);playing.add(node);node.onended=()=>playing.delete(node);node.start()}
+   $('exportProgress').textContent=`녹화 중 대사 ${i+1} / ${cues.length} · ${fmt(Math.round(elapsed))}`;
+   await sleep(seconds*1000);elapsed+=seconds;
+  }
+ }
  await sleep(1500);stop();await done;
  finishExport();
- download(new Blob(parts,{type:'video/webm'}),'quantum-guardian-introduction.webm');
+ download(new Blob(parts,{type:'video/webm'}),mode==='fixed'?'quantum-guardian-introduction-fixed.webm':'quantum-guardian-introduction.webm');
  $('exportNote').textContent='webm 을 내려받았습니다. mp4 로 바꾸는 ffmpeg 명령은 README 를 보세요.';
 }
 function finishExport(){document.body.classList.remove('exporting');qg.setExporting(false);$('exportOverlay').hidden=true;qg.goCue(index)}
@@ -220,7 +236,7 @@ function wavBlob(buffer){
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),10000)}
 $('exportFixed').onclick=()=>render('fixed');
 $('exportPushed').onclick=()=>render('pushed');
-$('exportVideo').onclick=exportVideo;
+$('exportVideoFollow').onclick=()=>exportVideo('follow');$('exportVideoFixed').onclick=()=>exportVideo('fixed');
 $('exportClips').onclick=()=>{for(const [i,clip] of [...clips].sort((a,b)=>a[0]-b[0]))download(clip.blob,`cue-${String(i+1).padStart(2,'0')}.webm`);$('exportNote').textContent=`${clips.size}개 파일을 내려받았습니다. 브라우저가 여러 파일 내려받기를 물으면 허용하세요.`};
 })();
 </script>
