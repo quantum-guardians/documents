@@ -18,6 +18,8 @@ python -m http.server 8765 --bind 127.0.0.1 --directory video
 - 저장할 때 녹음 앞뒤 0.3초(녹음을 켜고 끈 키·마우스 소리)와 그 바깥의 조용한
   부분을 잘라낸다. 이 기능이 생기기 전에 녹음한 것은 "예전 녹음본 앞뒤 다듬기"
   버튼으로 한 번에 다듬는다. 이미 다듬은 것은 다시 자르지 않는다.
+- "마이크 잡음 억제" 를 켜면 Chrome 이 마이크 입력에서 배경 잡음을 줄이고 음량을
+  고르게 한다(기본 켜짐). 이 설정은 켠 뒤에 새로 녹음하는 것부터 적용된다.
 - 녹음본은 이 브라우저의 IndexedDB 에 남는다. 다른 브라우저나 시크릿 창에서는
   보이지 않는다.
 
@@ -39,6 +41,17 @@ python -m http.server 8765 --bind 127.0.0.1 --directory video
 
 두 방식 모두 화면 선택 창이 뜨면 이 탭을 고르고, 영상 길이만큼 기다린다.
 녹화 중에는 다른 창을 위에 띄우지 말고 탭을 바꾸지 않는다.
+
+이미 녹음한 것이나 합친 파일의 화이트 노이즈를 줄이려면 ffmpeg 의 FFT 잡음
+제거 필터를 쓴다. `nf` 는 잡음 바닥(dB)이고, 잡음이 남으면 -20, 목소리가 뭉개지면
+-30 쪽으로 조절한다. `highpass` 는 80 Hz 아래의 웅웅거림을 없앤다.
+
+```powershell
+# 합친 wav
+ffmpeg -i narration-fixed.wav -af "highpass=f=80,afftdn=nf=-25" narration-clean.wav
+# 내보낸 동영상의 소리만 정리 (화면은 그대로)
+ffmpeg -i quantum-guardian-introduction.webm -c:v copy -af "highpass=f=80,afftdn=nf=-25" -c:a libopus quantum-guardian-introduction-clean.webm
+```
 
 mp4 가 필요하면:
 
